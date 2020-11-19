@@ -15,10 +15,10 @@ const render = (container, template, place) => {
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
-render(headerElement, userRank, `beforeend`);
-render(mainElement, navigation, `beforeend`);
-render(mainElement, sort, `beforeend`);
-render(mainElement, films, `beforeend`);
+render(headerElement, userRank(), `beforeend`);
+render(mainElement, navigation(), `beforeend`);
+render(mainElement, sort(), `beforeend`);
+render(mainElement, films(), `beforeend`);
 
 const filmsElement = mainElement.querySelector(`.films`);
 
@@ -27,7 +27,7 @@ render(filmsElement, filmSection(``, `visually-hidden`, `All movies. Upcoming`),
 const filmsListContainerElement = filmsElement.querySelector(`.films-list__container`);
 
 for (let i = 0; i < MAX_FILMS; i++) {
-  render(filmsListContainerElement, film, `beforeend`);
+  render(filmsListContainerElement, film(), `beforeend`);
 }
 
 const filmsListElement = mainElement.querySelector(`.films-list`);
@@ -36,12 +36,10 @@ render(filmsListElement, buttonShowMore, `beforeend`);
 render(filmsElement, filmSection(`films-list--extra`, ``, `Top rated movies`), `beforeend`);
 render(filmsElement, filmSection(`films-list--extra`, ``, `Most commented`), `beforeend`);
 
-const filmsListContainerElements = filmsElement.querySelectorAll(`.films-list__container`);
+const filmsListContainerElements = filmsElement.querySelectorAll(`.films-list--extra > div`);
 
-for (let i = 0; i < MAX_FILMS_EXTRA; i++) {
-  render(filmsListContainerElements[1], film, `beforeend`);
-}
-
-for (let i = 0; i < MAX_FILMS_EXTRA; i++) {
-  render(filmsListContainerElements[2], film, `beforeend`);
-}
+filmsListContainerElements.forEach((element) => {
+  for (let i = 0; i < MAX_FILMS_EXTRA; i++) {
+    render(element, film(), `beforeend`);
+  }
+});
