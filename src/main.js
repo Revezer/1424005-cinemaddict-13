@@ -32,7 +32,7 @@ for (let i = 0; i < MAX_FILMS; i++) {
 
 const filmsListElement = mainElement.querySelector(`.films-list`);
 
-render(filmsListElement, buttonShowMore, `beforeend`);
+render(filmsListElement, buttonShowMore(), `beforeend`);
 render(filmsElement, filmSection(`films-list--extra`, ``, `Top rated movies`), `beforeend`);
 render(filmsElement, filmSection(`films-list--extra`, ``, `Most commented`), `beforeend`);
 
