@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
 
 export const popUp = (task) => {
-  const {picture, name, rating, duration, description, comments, releaseDate, popup, watchlist, watched, favorites} = task;
+  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor} = task;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD H:m`);
+  const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
 
   const quantityComments = Object.keys(comments).length;
 
@@ -24,17 +25,8 @@ export const popUp = (task) => {
   };
 
   const createGenre = () => {
-    return popup.genres.map((element) => `<span class="film-details__genre">${element}</span>`).join(``);
+    return genres.map((element) => `<span class="film-details__genre">${element}</span>`).join(``);
   };
-  const controlBlockWatchList = watchlist
-    ? `checked`
-    : ``;
-  const controlBlockWatched = watched
-    ? `checked`
-    : ``;
-  const controlBlockFavorites = favorites
-    ? `checked`
-    : ``;
 
   const commentsTemplate = createComments();
   const genreTemplate = createGenre();
@@ -49,14 +41,14 @@ export const popUp = (task) => {
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="${picture}" alt="">
 
-          <p class="film-details__age">${popup.ageRating}</p>
+          <p class="film-details__age">${ageRating}</p>
         </div>
 
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
               <h3 class="film-details__title">${name}</h3>
-              <p class="film-details__title-original">Original: ${popup.originalName}</p>
+              <p class="film-details__title-original">Original: ${originalName}</p>
             </div>
 
             <div class="film-details__rating">
@@ -67,19 +59,19 @@ export const popUp = (task) => {
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${popup.producer}</td>
+              <td class="film-details__cell">${producer}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${popup.screenwriter}</td>
+              <td class="film-details__cell">${screenwriter}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${popup.actor}</td>
+              <td class="film-details__cell">${actor}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${releaseDate}</td>
+              <td class="film-details__cell">${releaseDateFilm(releaseDate)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -87,7 +79,7 @@ export const popUp = (task) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${popup.country}</td>
+              <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
@@ -104,13 +96,13 @@ export const popUp = (task) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${controlBlockWatchList}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlist ? `checked` : ``}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${controlBlockWatched}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watched ? `checked` : ``}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${controlBlockFavorites}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorites ? `checked` : ``}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>

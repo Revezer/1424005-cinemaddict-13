@@ -1,9 +1,4 @@
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+import {getRandomInteger} from "../view/utils.js";
 
 const generateDescription = () => {
   const description = [];
@@ -36,7 +31,31 @@ const generateDateComment = () => {
   ];
   const randomIndex = getRandomInteger(0, date.length - 1);
 
-  return date[randomIndex];
+  return new Date(date[randomIndex]);
+};
+
+const generateDate = () => {
+  const releaseDate = [
+    `25 January 1950`,
+    `15 February 1945`,
+    `2 March 1963`,
+    `9 April 1972`,
+    `19 April 1990`,
+  ];
+  const randomIndex = getRandomInteger(0, releaseDate.length - 1);
+
+  return new Date(releaseDate[randomIndex]);
+};
+
+const generatePicture = () => {
+  let picture = [
+    `./images/posters/popeye-meets-sinbad.png`,
+    `./images/posters/made-for-each-other.png`,
+    `./images/posters/sagebrush-trail.jpg`,
+    `./images/posters/santa-claus-conquers-the-martians.jpg`
+  ];
+  const randomIndex = getRandomInteger(0, picture.length - 1);
+  return picture[randomIndex];
 };
 
 const generateComment = () => {
@@ -70,27 +89,41 @@ const generateName = () => {
   return name[randomIndex];
 };
 
+const generateRating = () => {
+  const rating = getRandomInteger(1, 100) / 10;
+  return rating;
+};
+
+const generateDuration = () => {
+  const duration = [
+    `50m`,
+    `70m`,
+    `110m`,
+  ];
+  const randomIndex = getRandomInteger(0, duration.length - 1);
+
+  return duration[randomIndex];
+};
 
 export const mockfilm = () => {
   return {
-    picture: `./images/posters/popeye-meets-sinbad.png`,
+    picture: generatePicture(),
     name: generateName(),
-    rating: `6.3`,
-    duration: `1h`,
+    rating: generateRating(),
+    duration: generateDuration(),
     description: generateDescription(),
-    releaseDate: `30 March 1945`,
-    standart: {
-      genre: `horror`,
-    },
-    popup: {
-      originalName: `Popeye`,
-      producer: `Anthony Mann`,
-      screenwriter: `Anne Wigton, Heinz Herald, Richard Weil`,
-      actor: `Erich von Stroheim, Mary Beth Hughes, Dan Duryea`,
-      country: `USA`,
-      genres: [`horror`, `comedy`],
-      ageRating: `18+`
-    },
+    releaseDate: generateDate(),
+
+    genre: `horror`,
+
+    originalName: `Popeye`,
+    producer: `Anthony Mann`,
+    screenwriter: `Anne Wigton, Heinz Herald, Richard Weil`,
+    actor: `Erich von Stroheim, Mary Beth Hughes, Dan Duryea`,
+    country: `USA`,
+    genres: [`horror`, `comedy`],
+    ageRating: `18+`,
+
     watchlist: Boolean(getRandomInteger(0, 1)),
     watched: Boolean(getRandomInteger(0, 1)),
     favorites: Boolean(getRandomInteger(0, 1)),
