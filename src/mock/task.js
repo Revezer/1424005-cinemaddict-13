@@ -34,18 +34,6 @@ const generateDateComment = () => {
   return new Date(date[randomIndex]);
 };
 
-const generateDate = () => {
-  const releaseDate = [
-    `25 January 1950`,
-    `15 February 1945`,
-    `2 March 1963`,
-    `9 April 1972`,
-    `19 April 1990`,
-  ];
-  const randomIndex = getRandomInteger(0, releaseDate.length - 1);
-
-  return new Date(releaseDate[randomIndex]);
-};
 
 const generatePicture = () => {
   let picture = [
@@ -94,25 +82,14 @@ const generateRating = () => {
   return rating;
 };
 
-const generateDuration = () => {
-  const duration = [
-    `50m`,
-    `70m`,
-    `110m`,
-  ];
-  const randomIndex = getRandomInteger(0, duration.length - 1);
-
-  return duration[randomIndex];
-};
-
 export const mockfilm = () => {
   return {
     picture: generatePicture(),
     name: generateName(),
     rating: generateRating(),
-    duration: generateDuration(),
+    duration: getRandomInteger(50, 120),
     description: generateDescription(),
-    releaseDate: generateDate(),
+    releaseDate: getRandomInteger(-2335219200000, 1606822173),
 
     genre: `horror`,
 

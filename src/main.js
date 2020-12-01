@@ -12,6 +12,7 @@ const MAX_FILMS = 5;
 const MAX_FILMS_EXTRA = 2;
 
 const filmCard = new Array(MAX_FILMS).fill().map(mockfilm);
+const filmCardExtra = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
@@ -40,9 +41,9 @@ render(filmsElement, filmSection(`films-list--extra`, ``, `Most commented`), `be
 const filmsListContainerElements = filmsElement.querySelectorAll(`.films-list--extra > div`);
 
 filmsListContainerElements.forEach((element) => {
-  for (let i = 0; i < MAX_FILMS_EXTRA; i++) {
-    render(element, film(filmCard[i]), `beforeend`);
-  }
+  filmCardExtra.forEach((elementFilm) => {
+    render(element, film(elementFilm), `beforeend`);
+  });
 });
 
 const filmCardElements = document.querySelectorAll(`.film-card`);
