@@ -4,13 +4,15 @@ import {sort} from "./view/sort.js";
 import {films, filmSection} from "./view/films.js";
 import {film} from "./view/film.js";
 import {buttonShowMore} from "./view/button.js";
+import {mockfilm} from "./mock/task.js";
+import {popUp} from "./view/popup.js";
+import {render} from "./view/utils.js";
 
 const MAX_FILMS = 5;
 const MAX_FILMS_EXTRA = 2;
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+const filmCard = new Array(MAX_FILMS).fill().map(mockfilm);
+const filmCardExtra = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
@@ -26,9 +28,9 @@ render(filmsElement, filmSection(``, `visually-hidden`, `All movies. Upcoming`),
 
 const filmsListContainerElement = filmsElement.querySelector(`.films-list__container`);
 
-for (let i = 0; i < MAX_FILMS; i++) {
-  render(filmsListContainerElement, film(), `beforeend`);
-}
+filmCard.forEach((element) => {
+  render(filmsListContainerElement, film(element), `beforeend`);
+});
 
 const filmsListElement = mainElement.querySelector(`.films-list`);
 
@@ -39,7 +41,16 @@ render(filmsElement, filmSection(`films-list--extra`, ``, `Most commented`), `be
 const filmsListContainerElements = filmsElement.querySelectorAll(`.films-list--extra > div`);
 
 filmsListContainerElements.forEach((element) => {
-  for (let i = 0; i < MAX_FILMS_EXTRA; i++) {
-    render(element, film(), `beforeend`);
-  }
+  filmCardExtra.forEach((elementFilm) => {
+    render(element, film(elementFilm), `beforeend`);
+  });
+});
+
+const filmCardElements = document.querySelectorAll(`.film-card`);
+const bodyElement = document.querySelector(`body`);
+
+filmCardElements.forEach((element, i) => {
+  element.addEventListener(`click`, function () {
+    render(bodyElement, popUp(filmCard[i]), `beforeend`);
+  });
 });

@@ -1,165 +1,151 @@
-export const buttonShowMore = () => {
-  return `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+import dayjs from "dayjs";
 
-      <div class="films-list__container">
-        <article class="film-card">
-          <h3 class="film-card__title">Popeye the Sailor Meets Sindbad the Sailor</h3>
-          <p class="film-card__rating">6.3</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1936</span>
-            <span class="film-card__duration">16m</span>
-            <span class="film-card__genre">Cartoon</span>
-          </p>
-          <img src="./images/posters/popeye-meets-sinbad.png" alt="" class="film-card__poster">
-          <p class="film-card__description">In this short, Sindbad the Sailor (presumably Bluto playing a "role") proclaims himself, in song, to be the greatest sailor, adventurer and…</p>
-          <a class="film-card__comments">0 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist film-card__controls-item--active" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched film-card__controls-item--active" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite film-card__controls-item--active" type="button">Mark as favorite</button>
-          </div>
-        </article>
+export const popUp = (task) => {
+  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor} = task;
 
-        <article class="film-card">
-          <h3 class="film-card__title">Sagebrush Trail</h3>
-          <p class="film-card__rating">4.0</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1937</span>
-            <span class="film-card__duration">54m</span>
-            <span class="film-card__genre">Western</span>
-          </p>
-          <img src="./images/posters/sagebrush-trail.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed vehicula lorem. Quisque eu dignissim sem, vitae sodales dolor. Duis act…</p>
-          <a class="film-card__comments">51 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched film-card__controls-item--active" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite film-card__controls-item--active" type="button">Mark as favorite</button>
-          </div>
-        </article>
+  const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD H:m`);
+  const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
 
-        <article class="film-card">
-          <h3 class="film-card__title">The Dance of Life</h3>
-          <p class="film-card__rating">6.5</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1940</span>
-            <span class="film-card__duration">1h 55m</span>
-            <span class="film-card__genre">Musical</span>
-          </p>
-          <img src="./images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">Cumsan turpis nec elit congue, sit amet aliquet felis dapibus. Mauris auctor ornare tellus. Donec maximus quis nunc in sollicitudin. Quisqu…</p>
-          <a class="film-card__comments">3 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched film-card__controls-item--active" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
-          </div>
-        </article>
+  const quantityComments = Object.keys(comments).length;
 
-        <article class="film-card">
-          <h3 class="film-card__title">The Man with the Golden Arm</h3>
-          <p class="film-card__rating">3.0</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1925</span>
-            <span class="film-card__duration">1h 59m</span>
-            <span class="film-card__genre">Drama</span>
-          </p>
-          <img src="./images/posters/the-man-with-the-golden-arm.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">Curabitur lacinia, lacus a egestas auctor, massa enim commodo elit, neque mauris a nunc. Donec ipsum felis, ve facilisis tortor commodo etc…</p>
-          <a class="film-card__comments">22 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched film-card__controls-item--active" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite film-card__controls-item--active" type="button">Mark as favorite</button>
-          </div>
-        </article>
+  const createComments = () => {
+    return comments.map((element) => `<li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${element.text}</p>
+        <p class="film-details__comment-info">
+          <span class="film-details__comment-author">${element.commentAuthor}</span>
+          <span class="film-details__comment-day">${dateComment(element.commentDate)}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
       </div>
-    </section>
+    </li>`).join(``);
+  };
 
-    <section class="films-list films-list--extra">
-      <h2 class="films-list__title">Top rated</h2>
+  const createGenre = () => {
+    return genres.map((element) => `<span class="film-details__genre">${element}</span>`).join(``);
+  };
 
-      <div class="films-list__container">
-        <article class="film-card">
-          <h3 class="film-card__title">The Man with the Golden Arm</h3>
-          <p class="film-card__rating">9.0</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1955</span>
-            <span class="film-card__duration">1h 59m</span>
-            <span class="film-card__genre">Drama</span>
-          </p>
-          <img src="./images/posters/the-man-with-the-golden-arm.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">Frankie Machine (Frank Sinatra) is released from the federal Narcotic Farm in Lexington, Kentucky with a set of drums and a new outlook on…</p>
-          <a class="film-card__comments">18 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched film-card__controls-item--active" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
-          </div>
-        </article>
+  const commentsTemplate = createComments();
+  const genreTemplate = createGenre();
 
-        <article class="film-card">
-          <h3 class="film-card__title">The Great Flamarion</h3>
-          <p class="film-card__rating">8.9</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1945</span>
-            <span class="film-card__duration">1h 18m</span>
-            <span class="film-card__genre">Mystery</span>
-          </p>
-          <img src="./images/posters/the-great-flamarion.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in flashback. The Grea…</p>
-          <a class="film-card__comments">12 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
-          </div>
-        </article>
+  return `<section class="film-details">
+  <form class="film-details__inner" action="" method="get">
+    <div class="film-details__top-container">
+      <div class="film-details__close">
+        <button class="film-details__close-btn" type="button">close</button>
       </div>
-    </section>
+      <div class="film-details__info-wrap">
+        <div class="film-details__poster">
+          <img class="film-details__poster-img" src="${picture}" alt="">
 
-    <section class="films-list films-list--extra">
-      <h2 class="films-list__title">Most commented</h2>
+          <p class="film-details__age">${ageRating}</p>
+        </div>
 
-      <div class="films-list__container">
-        <article class="film-card">
-          <h3 class="film-card__title">Santa Claus Conquers the Martians</h3>
-          <p class="film-card__rating">2.3</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1964</span>
-            <span class="film-card__duration">1h 21m</span>
-            <span class="film-card__genre">Comedy</span>
-          </p>
-          <img src="./images/posters/santa-claus-conquers-the-martians.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">The Martians Momar ("Mom Martian") and Kimar ("King Martian") are worried that their children Girmar ("Girl Martian") and Bomar ("Boy Marti…</p>
-          <a class="film-card__comments">465 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite film-card__controls-item--active" type="button">Mark as favorite</button>
+        <div class="film-details__info">
+          <div class="film-details__info-head">
+            <div class="film-details__title-wrap">
+              <h3 class="film-details__title">${name}</h3>
+              <p class="film-details__title-original">Original: ${originalName}</p>
+            </div>
+
+            <div class="film-details__rating">
+              <p class="film-details__total-rating">${rating}</p>
+            </div>
           </div>
-        </article>
 
-        <article class="film-card">
-          <h3 class="film-card__title">Made for Each Other</h3>
-          <p class="film-card__rating">5.8</p>
-          <p class="film-card__info">
-            <span class="film-card__year">1939</span>
-            <span class="film-card__duration">1h 32m</span>
-            <span class="film-card__genre">Comedy</span>
+          <table class="film-details__table">
+            <tr class="film-details__row">
+              <td class="film-details__term">Director</td>
+              <td class="film-details__cell">${producer}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Writers</td>
+              <td class="film-details__cell">${screenwriter}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Actors</td>
+              <td class="film-details__cell">${actor}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Release Date</td>
+              <td class="film-details__cell">${releaseDateFilm(releaseDate)}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Runtime</td>
+              <td class="film-details__cell">${duration}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Country</td>
+              <td class="film-details__cell">${country}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Genres</td>
+              <td class="film-details__cell">
+              ${genreTemplate}
+              </td>
+            </tr>
+          </table>
+
+          <p class="film-details__film-description">
+            ${description}
           </p>
-          <img src="./images/posters/made-for-each-other.png" alt="" class="film-card__poster">
-          <p class="film-card__description">John Mason (James Stewart) is a young, somewhat timid attorney in New York City. He has been doing his job well, and he has a chance of bei…</p>
-          <a class="film-card__comments">56 comments</a>
-          <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
-          </div>
-        </article>
+        </div>
       </div>
-    </section>
-  </section>`;
+
+      <section class="film-details__controls">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlist ? `checked` : ``}>
+        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watched ? `checked` : ``}>
+        <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
+
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorites ? `checked` : ``}>
+        <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
+      </section>
+    </div>
+
+    <div class="film-details__bottom-container">
+      <section class="film-details__comments-wrap">
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${quantityComments}</span></h3>
+
+        <ul class="film-details__comments-list">
+          ${commentsTemplate}
+        </ul>
+
+        <div class="film-details__new-comment">
+          <div class="film-details__add-emoji-label"></div>
+
+          <label class="film-details__comment-label">
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+          </label>
+
+          <div class="film-details__emoji-list">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+            <label class="film-details__emoji-label" for="emoji-smile">
+              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+            </label>
+
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+            <label class="film-details__emoji-label" for="emoji-sleeping">
+              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+            </label>
+
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+            <label class="film-details__emoji-label" for="emoji-puke">
+              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+            </label>
+
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+            <label class="film-details__emoji-label" for="emoji-angry">
+              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+            </label>
+          </div>
+        </div>
+      </section>
+    </div>
+  </form>
+</section>`;
 };

@@ -10,6 +10,3 @@ export const filmSection = (extra, hidden, text) => {
   </div>
 </section>`;
 };
-
-// visually-hidden
-// All movies. Upcoming
