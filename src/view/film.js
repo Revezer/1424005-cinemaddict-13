@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
+import {createElement} from "./utils.js";
 
-export const film = (task) => {
+const film = (task) => {
   const {picture, name, rating, duration, description, watchlist, watched, favorites, comments, genre, releaseDate} = task;
 
   const quantityComments = Object.keys(comments).length;
@@ -33,3 +34,25 @@ export const film = (task) => {
     </div>
   </article>`;
 };
+
+export default class Film {
+  constructor(task) {
+    this._element = null;
+    this._task = task;
+  }
+
+  getTemplate() {
+    return film(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

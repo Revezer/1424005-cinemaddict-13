@@ -23,15 +23,11 @@ const generateDescription = () => {
 };
 
 const generateDateComment = () => {
-  const date = [
-    `2019/10/20 05:10`,
-    `2017/20/30 13:20`,
-    `2018/12/31 20:30`,
-    `2016/05/15 10:40`
-  ];
-  const randomIndex = getRandomInteger(0, date.length - 1);
+  const date = new Date();
+  const random = date.setDate(date.getDate() - getRandomInteger(0, 365));
+  const dateComment = new Date(random);
 
-  return new Date(date[randomIndex]);
+  return dateComment;
 };
 
 
