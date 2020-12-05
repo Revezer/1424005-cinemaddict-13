@@ -19,7 +19,7 @@ const filmCardExtraMost = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
-const bodyElement = document.querySelector(`body`);
+const bodyElement = document.body;
 
 const filmsComponent = new Films();
 
@@ -36,8 +36,35 @@ const filmListComponent = new FilmList();
 
 render(filmSectionComponent.getElement(), filmListComponent.getElement(), RenderPosition.BEFOREEND);
 
+const closePopUp = () => {
+  const buttonClose = document.querySelector(`.film-details__close-btn`);
+  const popUpElement = document.querySelector(`.film-details`);
+  buttonClose.addEventListener(`click`, () => {
+    popUpElement.remove();
+    bodyElement.classList.remove(`hide-overflow`);
+  });
+};
+
+const openPopUp = (film) => {
+  render(bodyElement, new PopUp(film).getElement(), RenderPosition.BEFOREEND);
+  bodyElement.classList.add(`hide-overflow`);
+  closePopUp();
+};
+
+const renderFilm = (taskListElement, film) => {
+  const taskComponent = new Film(film);
+  const taskEditComponent = new PopUp(film);
+
+  taskComponent.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, () => {
+    openPopUp(film, taskEditComponent);
+  });
+
+  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+
+};
+
 filmCard.forEach((element) => {
-  render(filmListComponent.getElement(), new Film(element).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(filmListComponent.getElement(), element);
 });
 
 render(filmSectionComponent.getElement(), new ButtonShowMore().getElement(), RenderPosition.BEFOREEND);
@@ -53,32 +80,9 @@ render(filmSectionTopComponent.getElement(), filmListTopComponent.getElement(), 
 render(filmSectionMostComponent.getElement(), filmListMostComponent.getElement(), RenderPosition.BEFOREEND);
 
 filmCardExtraTop.forEach((element) => {
-  render(filmListTopComponent.getElement(), new Film(element).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(filmListTopComponent.getElement(), element);
 });
 
 filmCardExtraMost.forEach((element) => {
-  render(filmListMostComponent.getElement(), new Film(element).getElement(), RenderPosition.BEFOREEND);
-});
-
-const filmCardElements = document.querySelectorAll(`.film-card`);
-
-const openPopUp = (i) => {
-  render(bodyElement, new PopUp(filmCard[i]).getElement(), RenderPosition.BEFOREEND);
-  bodyElement.classList.add(`hide-overflow`);
-};
-
-const closePopUp = () => {
-  const buttonCloseElement = document.querySelector(`.film-details__close-btn`);
-  const popUpElement = document.querySelector(`.film-details`);
-  buttonCloseElement.addEventListener(`click`, function () {
-    popUpElement.remove();
-    bodyElement.classList.remove(`hide-overflow`);
-  });
-};
-
-filmCardElements.forEach((element, i) => {
-  element.addEventListener(`click`, function () {
-    openPopUp(i);
-    closePopUp();
-  });
+  renderFilm(filmListMostComponent.getElement(), element);
 });
