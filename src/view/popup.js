@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
+import {createElement} from "./utils.js";
 
-export const popUp = (task) => {
+const popUp = (task) => {
   const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor} = task;
 
-  const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD H:m`);
+  const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
 
   const quantityComments = Object.keys(comments).length;
@@ -149,3 +150,25 @@ export const popUp = (task) => {
   </form>
 </section>`;
 };
+
+export default class PopUp {
+  constructor(task) {
+    this._element = null;
+    this._task = task;
+  }
+
+  getTemplate() {
+    return popUp(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
