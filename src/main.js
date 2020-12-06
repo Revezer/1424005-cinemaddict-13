@@ -8,6 +8,7 @@ import Film from "./view/film.js";
 import ButtonShowMore from "./view/button.js";
 import {mockfilm} from "./mock/task.js";
 import PopUp from "./view/popup.js";
+import NoFilm from "./view/noFilm.js";
 import {render, RenderPosition} from "./view/utils.js";
 
 const MAX_FILMS = 5;
@@ -36,6 +37,19 @@ const filmListComponent = new FilmList();
 
 render(filmSectionComponent.getElement(), filmListComponent.getElement(), RenderPosition.BEFOREEND);
 
+if (filmCard.length === 0) {
+  render(filmListComponent.getElement(), new NoFilm().getElement(), RenderPosition.BEFOREEND);
+}
+
+const onEscKeyDown = (evt) => {
+  if (evt.key === `Escape` || evt.key === `Esc`) {
+    const popUpElement = document.querySelector(`.film-details`);
+    popUpElement.remove();
+    bodyElement.classList.remove(`hide-overflow`);
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  }
+};
+
 const closePopUp = () => {
   const buttonClose = document.querySelector(`.film-details__close-btn`);
   const popUpElement = document.querySelector(`.film-details`);
@@ -49,6 +63,7 @@ const openPopUp = (film) => {
   render(bodyElement, new PopUp(film).getElement(), RenderPosition.BEFOREEND);
   bodyElement.classList.add(`hide-overflow`);
   closePopUp();
+  document.addEventListener(`keydown`, onEscKeyDown);
 };
 
 const renderFilm = (taskListElement, film) => {
