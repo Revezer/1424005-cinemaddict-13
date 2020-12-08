@@ -1,8 +1,8 @@
+import Abstract from "./abstract.js";
 import dayjs from "dayjs";
-import {createElement} from "./utils.js";
 
-const popUp = (task) => {
-  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor} = task;
+const popUp = (film) => {
+  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor} = film;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
@@ -151,24 +151,13 @@ const popUp = (task) => {
 </section>`;
 };
 
-export default class PopUp {
-  constructor(task) {
-    this._element = null;
-    this._task = task;
+export default class PopUp extends Abstract {
+  constructor(film) {
+    super();
+    this._film = film;
   }
 
   getTemplate() {
-    return popUp(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return popUp(this._film);
   }
 }

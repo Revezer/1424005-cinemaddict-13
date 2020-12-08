@@ -9,10 +9,11 @@ import ButtonShowMore from "./view/button.js";
 import {mockfilm} from "./mock/task.js";
 import PopUp from "./view/popup.js";
 import NoFilm from "./view/noFilm.js";
-import {render, RenderPosition} from "./view/utils.js";
+import {render, RenderPosition, remove} from "./utils/render.js";
 
-const MAX_FILMS = 5;
+const MAX_FILMS = 10;
 const MAX_FILMS_EXTRA = 2;
+const FILM_STEP = 5;
 
 const filmCard = new Array(MAX_FILMS).fill().map(mockfilm);
 const filmCardExtraTop = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
@@ -37,9 +38,52 @@ const filmListComponent = new FilmList();
 
 render(filmSectionComponent.getElement(), filmListComponent.getElement(), RenderPosition.BEFOREEND);
 
-if (filmCard.length === 0) {
-  render(filmListComponent.getElement(), new NoFilm().getElement(), RenderPosition.BEFOREEND);
-}
+const renderFilm = (taskListElement, film) => {
+  const taskComponent = new Film(film);
+  const taskEditComponent = new PopUp(film);
+
+  taskComponent.setClickHandler(() => {
+    openPopUp(film, taskEditComponent);
+  });
+
+  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+
+};
+
+const renderFilms = (films) => {
+  if (filmCard.length === 0) {
+    render(filmListComponent.getElement(), new NoFilm().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
+  films
+    .slice(0, Math.min(filmCard.length, FILM_STEP))
+    .forEach((element) => {
+      renderFilm(filmListComponent.getElement(), element);
+    });
+
+  if (films.length > FILM_STEP) {
+    let renderFilmCount = FILM_STEP;
+
+    const buttonLoadFilm = new ButtonShowMore();
+
+    render(filmSectionComponent.getElement(), buttonLoadFilm.getElement(), RenderPosition.BEFOREEND);
+
+    buttonLoadFilm.setClickHandler(() => {
+      films
+        .slice(renderFilmCount, renderFilmCount + FILM_STEP)
+        .forEach((element) => {
+          renderFilm(filmListComponent.getElement(), element);
+        });
+
+      renderFilmCount += FILM_STEP;
+
+      if (renderFilmCount >= films.length) {
+        remove(buttonLoadFilm);
+      }
+    });
+  }
+};
 
 const onEscKeyDown = (evt) => {
   if (evt.key === `Escape` || evt.key === `Esc`) {
@@ -66,23 +110,7 @@ const openPopUp = (film) => {
   document.addEventListener(`keydown`, onEscKeyDown);
 };
 
-const renderFilm = (taskListElement, film) => {
-  const taskComponent = new Film(film);
-  const taskEditComponent = new PopUp(film);
-
-  taskComponent.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, () => {
-    openPopUp(film, taskEditComponent);
-  });
-
-  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
-
-};
-
-filmCard.forEach((element) => {
-  renderFilm(filmListComponent.getElement(), element);
-});
-
-render(filmSectionComponent.getElement(), new ButtonShowMore().getElement(), RenderPosition.BEFOREEND);
+renderFilms(filmCard);
 
 const filmSectionTopComponent = new FilmSection(`films-list--extra`, ``, `Top rated movies`);
 const filmListTopComponent = new FilmList(`top`);

@@ -1,5 +1,5 @@
+import Abstract from "./abstract.js";
 import dayjs from "dayjs";
-import {createElement} from "./utils.js";
 
 const textDescription = (description) => {
   let text = description.join(``);
@@ -9,11 +9,12 @@ const textDescription = (description) => {
   return text;
 };
 
-export default class Film {
+export default class Film extends Abstract {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
     this._date = dayjs(film.releaseDate). format(`YYYY`);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
@@ -36,14 +37,13 @@ export default class Film {
   </article>`;
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._clickHandler);
   }
 }
