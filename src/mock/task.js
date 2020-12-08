@@ -1,4 +1,4 @@
-import {getRandomInteger} from "../view/utils.js";
+import {getRandomInteger} from "../utils/common.js";
 
 const generateDescription = () => {
   const description = [];
