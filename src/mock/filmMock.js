@@ -1,5 +1,7 @@
 import {getRandomInteger} from "../utils/common.js";
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generateDescription = () => {
   const description = [];
   const descriptions = [
@@ -80,6 +82,7 @@ const generateRating = () => {
 
 export const mockfilm = () => {
   return {
+    id: generateId(),
     picture: generatePicture(),
     name: generateName(),
     rating: generateRating(),
