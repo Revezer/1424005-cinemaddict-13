@@ -1,7 +1,7 @@
 import UserRankViev from "./view/userrank.js";
-import {mockfilm} from "./mock/filmMock.js";
+import {mockfilm} from "./mock/film-mock.js";
 import {render, RenderPosition} from "./utils/render.js";
-import MovieList from "./presenter/movieList.js";
+import MovieList from "./presenter/movie-list.js";
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);

@@ -68,9 +68,9 @@ export default class Movie {
     remove(this._filmPopUpComponent);
   }
 
-  _closePopUp() {
-    const buttonClose = document.querySelector(`.film-details__close-btn`);
-    const popUpElement = document.querySelector(`.film-details`);
+  _closePopUp(filmPopUp) {
+    const buttonClose = filmPopUp.getElement(`.film-details__close-btn`);
+    const popUpElement = filmPopUp.getElement(`.film-details`);
     buttonClose.addEventListener(`click`, () => {
       popUpElement.remove();
       document.body.classList.remove(`hide-overflow`);
@@ -79,9 +79,10 @@ export default class Movie {
   }
 
   _openPopUp(film) {
-    render(document.body, new PopUp(film).getElement(), RenderPosition.BEFOREEND);
+    const filmPopUp = new PopUp(film);
+    render(document.body, filmPopUp.getElement(), RenderPosition.BEFOREEND);
     document.body.classList.add(`hide-overflow`);
-    this._closePopUp();
+    this._closePopUp(filmPopUp);
     document.addEventListener(`keydown`, this._onEscKeyDown);
     this._changeMode();
     this._mode = Mode.POPUP;

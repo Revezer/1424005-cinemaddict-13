@@ -1,10 +1,10 @@
 import Navigation from "../view/navigation.js";
 import Sort from "../view/sort.js";
-import FilmsSection from "../view/filmsSection.js";
-import FilmSection from "../view/filmSection.js";
+import FilmsSection from "../view/films-section.js";
+import FilmSection from "../view/film-section.js";
 import FilmList from "../view/film-list.js";
 import ButtonShowMore from "../view/button.js";
-import NoFilm from "../view/noFilm.js";
+import NoFilm from "../view/no-film.js";
 import Movie from "./movie.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {updateItem} from "../utils/common.js";
@@ -88,7 +88,6 @@ export default class MovieList {
         films
           .slice(renderFilmCount, renderFilmCount + FILM_STEP)
           .forEach((element) => {
-            // this._renderFilm(this._filmListComponent.getElement(), element);
             this._renderFilm(element);
           });
 
@@ -104,7 +103,6 @@ export default class MovieList {
   _renderNoFilm(films) {
     if (films.length === 0) {
       render(this._filmListComponent.getElement(), this._noFilmComponent.getElement(), RenderPosition.BEFOREEND);
-      return;
     }
   }
 
