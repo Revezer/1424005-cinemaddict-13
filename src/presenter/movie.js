@@ -69,9 +69,8 @@ export default class Movie {
   }
 
   _closePopUp(filmPopUp) {
-    const buttonClose = filmPopUp.getElement(`.film-details__close-btn`);
-    const popUpElement = filmPopUp.getElement(`.film-details`);
-    buttonClose.addEventListener(`click`, () => {
+    const popUpElement = filmPopUp.getElement();
+    filmPopUp.setButtonClose(() => {
       popUpElement.remove();
       document.body.classList.remove(`hide-overflow`);
       this._mode = Mode.CARD;

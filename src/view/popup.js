@@ -155,9 +155,20 @@ export default class PopUp extends Abstract {
   constructor(film) {
     super();
     this._film = film;
+    this._buttonCloseHandler = this._buttonCloseHandler.bind(this);
   }
 
   getTemplate() {
     return popUp(this._film);
+  }
+
+  _buttonCloseHandler(evt) {
+    evt.preventDefault();
+    this._callback.buttonCloseClick();
+  }
+
+  setButtonClose(callback) {
+    this._callback.buttonCloseClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._buttonCloseHandler);
   }
 }
