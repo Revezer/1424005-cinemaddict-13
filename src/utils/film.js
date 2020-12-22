@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 export const sortFilmData = (filmA, filmB) => {
-  return dayjs(filmA.releaseDate).diff(dayjs(filmB.releaseDate));
+  return dayjs(filmB.releaseDate).diff(dayjs(filmA.releaseDate));
 };
 
 export const sortFilmRating = (filmA, filmB) => {

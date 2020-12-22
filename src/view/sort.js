@@ -21,6 +21,13 @@ export default class Sort extends Abstract {
       return;
     }
 
+    const buttonSort = this.getElement().querySelectorAll(`.sort__button`);
+    buttonSort.forEach((element) => {
+      element.classList.remove(`sort__button--active`);
+    });
+
+    evt.target.classList.add(`sort__button--active`);
+
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
