@@ -8,6 +8,8 @@ import NoFilm from "../view/no-film.js";
 import Movie from "./movie.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {updateItem} from "../utils/common.js";
+import {sortFilmData, sortFilmRating} from "../utils/film.js";
+import {SortType} from "../const";
 
 const FILM_STEP = 5;
 
@@ -17,9 +19,11 @@ export default class MovieList {
     this._container = container;
     this._filmStep = FILM_STEP;
     this._filmPresenter = {};
+    this._currentSortType = SortType.DEFAULT;
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._navigationComponent = new Navigation();
     this._sortComponent = new Sort();
@@ -32,6 +36,7 @@ export default class MovieList {
 
   init(films) {
     this._films = films.slice();
+    this._sourcedFilms = films.slice();
 
     this._renderNavigation();
     this._renderSort();
@@ -45,8 +50,34 @@ export default class MovieList {
     render(this._container, this._navigationComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._films.sort(sortFilmData);
+        break;
+      case SortType.RATING:
+        this._films.sort(sortFilmRating);
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderFilms(this._films);
+  }
+
   _renderSort() {
     render(this._container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderFilmsSection() {
@@ -124,6 +155,6 @@ export default class MovieList {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
     this._filmStep = FILM_STEP;
-    remove(this._loadMoreButtonComponent);
+    remove(this._buttonShowMoreComponent);
   }
 }
