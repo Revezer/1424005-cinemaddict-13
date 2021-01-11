@@ -1,8 +1,9 @@
-import Abstract from "./abstract.js";
+import Smart from "./smart.js";
 import dayjs from "dayjs";
 
+
 const popUp = (film) => {
-  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor} = film;
+  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor, textComment, emotionComment} = film;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
@@ -117,10 +118,10 @@ const popUp = (film) => {
         </ul>
 
         <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label"></div>
+          <div class="film-details__add-emoji-label">${emotionComment}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${textComment}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -151,20 +152,137 @@ const popUp = (film) => {
 </section>`;
 };
 
-export default class PopUp extends Abstract {
+export default class PopUp extends Smart {
   constructor(film) {
     super();
-    this._film = film;
+    this._data = film;
     this._buttonCloseHandler = this._buttonCloseHandler.bind(this);
+    this._watchlistToggleHandler = this._watchlistToggleHandler.bind(this);
+    this._watchedToggleHandler = this._watchedToggleHandler.bind(this);
+    this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
+    this._commentTextInputHandler = this._commentTextInputHandler.bind(this);
+
+    this._emotionSmileHandler = this._emotionSmileHandler.bind(this);
+    this._emotionSleepingHandler = this._emotionSleepingHandler.bind(this);
+    this._emotionPukeHandler = this._emotionPukeHandler.bind(this);
+    this._emotionAngryHandler = this._emotionAngryHandler.bind(this);
+
+
+    this._setInnerHandlers();
+
+    this.emotionSmile = `./images/emoji/smile.png`;
+    this.emotionSleeping = `./images/emoji/sleeping.png`;
+    this.emotionPuke = `./images/emoji/puke.png`;
+    this.emotionAngry = `./images/emoji/angry.png`;
+  }
+
+  reset(film) {
+    this.updateData(
+        film
+    );
   }
 
   getTemplate() {
-    return popUp(this._film);
+    return popUp(this._data);
+  }
+
+  static parsePopUpToFilm(data) {
+    data = Object.assign({}, data);
+    return data;
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setButtonClose(this._callback.buttonCloseClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector(`.film-details__control-label--watchlist`)
+      .addEventListener(`click`, this._watchlistToggleHandler);
+    this.getElement()
+      .querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, this._watchedToggleHandler);
+    this.getElement()
+      .querySelector(`.film-details__control-label--favorite`)
+      .addEventListener(`click`, this._favoriteToggleHandler);
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, this._commentTextInputHandler);
+
+    this.getElement()
+      .querySelector(`#emoji-smile`)
+      .addEventListener(`click`, this._emotionSmileHandler);
+    this.getElement()
+      .querySelector(`#emoji-sleeping`)
+      .addEventListener(`click`, this._emotionSleepingHandler);
+    this.getElement()
+      .querySelector(`#emoji-puke`)
+      .addEventListener(`click`, this._emotionPukeHandler);
+    this.getElement()
+      .querySelector(`#emoji-angry`)
+      .addEventListener(`input`, this._emotionAngryHandler);
+  }
+
+  _commentTextInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      textComment: evt.target.value
+    }, true);
+  }
+
+  _watchlistToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      watchlist: !this._data.watchlist
+    });
+  }
+
+  _watchedToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      watched: !this._data.watched
+    });
+  }
+
+  _favoriteToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      favorites: !this._data.favorites
+    });
+  }
+
+  _emotionSmileHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      emotionComment: `<img src=${this.emotionSmile} width="100%" height="100%" alt="emoji-smile">`
+    });
+  }
+
+  _emotionSleepingHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      emotionComment: `<img src=${this.emotionSleeping} width="100%" height="100%" alt="emoji-smile">`
+    });
+  }
+
+  _emotionPukeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      emotionComment: `<img src=${this.emotionPuke} width="100%" height="100%" alt="emoji-smile">`
+    });
+  }
+
+  _emotionAngryHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      emotionComment: `<img src=${this.emotionAngry} width="100%" height="100%" alt="emoji-smile">`
+    });
   }
 
   _buttonCloseHandler(evt) {
     evt.preventDefault();
-    this._callback.buttonCloseClick();
+    this._callback.buttonCloseClick(PopUp.parsePopUpToFilm(this._data));
   }
 
   setButtonClose(callback) {

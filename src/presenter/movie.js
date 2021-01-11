@@ -69,8 +69,8 @@ export default class Movie {
   }
 
   _closePopUp(filmPopUp) {
-    const popUpElement = filmPopUp.getElement();
     filmPopUp.setButtonClose(() => {
+      const popUpElement = filmPopUp.getElement();
       popUpElement.remove();
       document.body.classList.remove(`hide-overflow`);
       this._mode = Mode.CARD;
@@ -90,6 +90,7 @@ export default class Movie {
   _onEscKeyDown(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       const popUpElement = document.querySelector(`.film-details`);
+      this._filmPopUpComponent(this.film);
       popUpElement.remove();
       document.body.classList.remove(`hide-overflow`);
       document.removeEventListener(`keydown`, this._onEscKeyDown);

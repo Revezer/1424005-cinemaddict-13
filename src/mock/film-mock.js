@@ -103,6 +103,9 @@ export const mockfilm = () => {
     watchlist: Boolean(getRandomInteger(0, 1)),
     watched: Boolean(getRandomInteger(0, 1)),
     favorites: Boolean(getRandomInteger(0, 1)),
-    comments: generateComment()
+    comments: generateComment(),
+
+    textComment: ``,
+    emotionComment: ``
   };
 };
