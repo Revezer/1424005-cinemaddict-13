@@ -45,13 +45,13 @@ export default class Movie {
       return;
     }
 
-    if (this._mode === Mode.CARD) {
+    //if (this._mode === Mode.CARD) {
       replace(this._filmComponent, prevFilmComponent);
-    }
+    //}
 
-    if (this._mode === Mode.POPUP) {
+    //if (this._mode === Mode.POPUP) {
       replace(this._filmPopUpComponent, prevFilmPopUpComponent);
-    }
+    //}
 
     remove(prevFilmComponent);
     remove(prevFilmPopUpComponent);
@@ -78,7 +78,7 @@ export default class Movie {
   }
 
   _openPopUp(film) {
-    const filmPopUp = new PopUp(film);
+    const filmPopUp = new PopUp(film, this._changeData);
     render(document.body, filmPopUp.getElement(), RenderPosition.BEFOREEND);
     document.body.classList.add(`hide-overflow`);
     this._closePopUp(filmPopUp);

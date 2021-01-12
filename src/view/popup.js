@@ -1,6 +1,7 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
 
+const createSmile = (smile) => `<img src=${smile} width="100%" height="100%" alt="emoji-smile">`;
 
 const popUp = (film) => {
   const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor, textComment, emotionComment} = film;
@@ -25,6 +26,7 @@ const popUp = (film) => {
       </div>
     </li>`).join(``);
   };
+
 
   const createGenre = () => {
     return genres.map((element) => `<span class="film-details__genre">${element}</span>`).join(``);
@@ -153,9 +155,10 @@ const popUp = (film) => {
 };
 
 export default class PopUp extends Smart {
-  constructor(film) {
+  constructor(film, changeData) {
     super();
     this._data = film;
+    this._changeData = changeData;
     this._buttonCloseHandler = this._buttonCloseHandler.bind(this);
     this._watchlistToggleHandler = this._watchlistToggleHandler.bind(this);
     this._watchedToggleHandler = this._watchedToggleHandler.bind(this);
@@ -233,9 +236,15 @@ export default class PopUp extends Smart {
 
   _watchlistToggleHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      watchlist: !this._data.watchlist
-    });
+    this._changeData(
+        Object.assign(
+            {},
+            this._data,
+            {
+              watchlist: !this._data.watchlist
+            }
+        )
+    );
   }
 
   _watchedToggleHandler(evt) {
@@ -255,28 +264,28 @@ export default class PopUp extends Smart {
   _emotionSmileHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      emotionComment: `<img src=${this.emotionSmile} width="100%" height="100%" alt="emoji-smile">`
+      emotionComment: createSmile(this.emotionSmile)
     });
   }
 
   _emotionSleepingHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      emotionComment: `<img src=${this.emotionSleeping} width="100%" height="100%" alt="emoji-smile">`
+      emotionComment: createSmile(this.emotionSleeping)
     });
   }
 
   _emotionPukeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      emotionComment: `<img src=${this.emotionPuke} width="100%" height="100%" alt="emoji-smile">`
+      emotionComment: createSmile(this.emotionPuke)
     });
   }
 
   _emotionAngryHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      emotionComment: `<img src=${this.emotionAngry} width="100%" height="100%" alt="emoji-smile">`
+      emotionComment: createSmile(this.emotionAngry)
     });
   }
 
