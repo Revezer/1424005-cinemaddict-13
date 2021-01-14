@@ -249,16 +249,28 @@ export default class PopUp extends Smart {
 
   _watchedToggleHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      watched: !this._data.watched
-    });
+    this._changeData(
+        Object.assign(
+            {},
+            this._data,
+            {
+              watched: !this._data.watched
+            }
+        )
+    );
   }
 
   _favoriteToggleHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      favorites: !this._data.favorites
-    });
+    this._changeData(
+        Object.assign(
+            {},
+            this._data,
+            {
+              favorites: !this._data.favorites
+            }
+        )
+    );
   }
 
   _emotionSmileHandler(evt) {
@@ -291,11 +303,22 @@ export default class PopUp extends Smart {
 
   _buttonCloseHandler(evt) {
     evt.preventDefault();
-    this._callback.buttonCloseClick(PopUp.parsePopUpToFilm(this._data));
+    // this._callback.buttonCloseClick(PopUp.parsePopUpToFilm(this._data));
+    this.getElement().remove();
+    document.body.classList.remove(`hide-overflow`);
   }
 
   setButtonClose(callback) {
     this._callback.buttonCloseClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._buttonCloseHandler);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      document.querySelector(`.film-details`).remove();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.body.classList.remove(`hide-overflow`);
+    }
   }
 }

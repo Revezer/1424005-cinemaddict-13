@@ -3,20 +3,13 @@ import PopUp from "../view/popup.js";
 
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
-const Mode = {
-  CARD: `CARD`,
-  POPUP: `POPUP`
-};
-
 export default class Movie {
-  constructor(filmContainer, changeData, changeMode) {
+  constructor(filmContainer, changeData) {
     this._filmContainer = filmContainer;
     this._changeData = changeData;
-    this._changeMode = changeMode;
 
     this._filmComponent = null;
     this._filmPopUpComponent = null;
-    this._mode = Mode.CARD;
 
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
@@ -30,10 +23,10 @@ export default class Movie {
     const prevFilmPopUpComponent = this._filmPopUpComponent;
 
     this._filmComponent = new Film(film);
-    this._filmPopUpComponent = new PopUp(film);
+    this._filmPopUpComponent = new PopUp(film, this._changeData);
 
     this._filmComponent.setClickHandler(() => {
-      this._openPopUp(film, this._filmPopUpComponent);
+      this._openPopUp(this._filmPopUpComponent);
     });
 
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
@@ -45,58 +38,47 @@ export default class Movie {
       return;
     }
 
-    //if (this._mode === Mode.CARD) {
-      replace(this._filmComponent, prevFilmComponent);
-    //}
-
-    //if (this._mode === Mode.POPUP) {
-      replace(this._filmPopUpComponent, prevFilmPopUpComponent);
-    //}
+    replace(this._filmComponent, prevFilmComponent);
+    replace(this._filmPopUpComponent, prevFilmPopUpComponent);
+    this._filmPopUpComponent.restoreHandlers();
 
     remove(prevFilmComponent);
     remove(prevFilmPopUpComponent);
-  }
-
-  resetViev() {
-    if (this._mode !== Mode.CARD) {
-      this._closePopUp();
-    }
   }
 
   destroy() {
     remove(this._filmComponent);
     remove(this._filmPopUpComponent);
   }
-
+  /*
   _closePopUp(filmPopUp) {
     filmPopUp.setButtonClose(() => {
-      const popUpElement = filmPopUp.getElement();
-      popUpElement.remove();
+      //const popUpElement = filmPopUp.getElement();
+      //popUpElement.remove();
       document.body.classList.remove(`hide-overflow`);
       this._mode = Mode.CARD;
     });
   }
-
-  _openPopUp(film) {
-    const filmPopUp = new PopUp(film, this._changeData);
+*/
+  _openPopUp(filmPopUp) {
+    // const filmPopUp = new PopUp(film, this._changeData);
     render(document.body, filmPopUp.getElement(), RenderPosition.BEFOREEND);
     document.body.classList.add(`hide-overflow`);
-    this._closePopUp(filmPopUp);
-    document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._changeMode();
-    this._mode = Mode.POPUP;
+    filmPopUp.setButtonClose();
+    // document.addEventListener(`keydown`, this._onEscKeyDown);
   }
-
+  /*
   _onEscKeyDown(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       const popUpElement = document.querySelector(`.film-details`);
-      this._filmPopUpComponent(this.film);
+      this._filmPopUpComponent = this.film;
       popUpElement.remove();
       document.body.classList.remove(`hide-overflow`);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
+      this._mode = Mode.CARD;
     }
   }
-
+  */
   _handleWatchlistClick() {
     this._changeData(
         Object.assign(

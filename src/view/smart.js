@@ -29,9 +29,14 @@ export default class Smart extends Abstract {
     const parent = prevElement.parentElement;
     this.removeElement();
 
+    const scrollTopPosition = prevElement.scrollTop;
+    const scrollLeftPosition = prevElement.scrollLeft;
+
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+
+    newElement.scrollTo(scrollLeftPosition, scrollTopPosition);
 
     this.restoreHandlers();
   }
