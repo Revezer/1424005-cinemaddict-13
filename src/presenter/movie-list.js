@@ -23,6 +23,7 @@ export default class MovieList {
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._navigationComponent = new Navigation();
