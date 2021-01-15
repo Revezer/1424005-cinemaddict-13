@@ -22,6 +22,7 @@ export default class MovieList {
     this._currentSortType = SortType.DEFAULT;
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
@@ -92,13 +93,19 @@ export default class MovieList {
     render(this._filmSectionComponent.getElement(), this._filmListComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.resetViev());
+  }
+
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 
   _renderFilm(film) {
-    const moviePresenter = new Movie(this._filmListComponent, this._handleFilmChange);
+    const moviePresenter = new Movie(this._filmListComponent, this._handleFilmChange, this._handleModeChange);
     moviePresenter.init(film);
     this._filmPresenter[film.id] = moviePresenter;
   }

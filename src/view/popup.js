@@ -170,6 +170,10 @@ export default class PopUp extends Smart {
     this._emotionPukeHandler = this._emotionPukeHandler.bind(this);
     this._emotionAngryHandler = this._emotionAngryHandler.bind(this);
 
+    this._swichMode = this._swichModeClick.bind(this);
+    this._swichModeButton = this._swichModeButton.bind(this);
+
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
 
     this._setInnerHandlers();
 
@@ -303,7 +307,6 @@ export default class PopUp extends Smart {
 
   _buttonCloseHandler(evt) {
     evt.preventDefault();
-    // this._callback.buttonCloseClick(PopUp.parsePopUpToFilm(this._data));
     this.getElement().remove();
     document.body.classList.remove(`hide-overflow`);
   }
@@ -316,9 +319,26 @@ export default class PopUp extends Smart {
 
   _onEscKeyDown(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      document.querySelector(`.film-details`).remove();
+      this.getElement().remove();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
       document.body.classList.remove(`hide-overflow`);
     }
+  }
+
+  _swichModeClick(evt) {
+    evt.preventDefault();
+    this._callback.swichMode();
+  }
+
+  _swichModeButton(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      this._callback.swichMode();
+    }
+  }
+
+  setSwichMode(callback) {
+    this._callback.swichMode = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._swichModeClick);
+    document.addEventListener(`keydown`, this._swichModeButton);
   }
 }
