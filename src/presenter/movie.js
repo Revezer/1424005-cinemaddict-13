@@ -1,5 +1,6 @@
 import Film from "../view/film.js";
 import PopUp from "../view/popup.js";
+import {UserAction, UpdateType} from "../const.js";
 
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
@@ -39,7 +40,8 @@ export default class Movie {
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-    this._filmPopUpComponent.setSwichMode(this._swichModeClosePopUp);
+    this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
+    this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
 
     if (prevFilmComponent === null || prevFilmPopUpComponent === null) {
       render(this._filmContainer.getElement(), this._filmComponent.getElement(), RenderPosition.BEFOREEND);
@@ -82,6 +84,8 @@ export default class Movie {
 
   _handleWatchlistClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._film,
@@ -94,6 +98,8 @@ export default class Movie {
 
   _handleWatchedClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._film,
@@ -106,6 +112,8 @@ export default class Movie {
 
   _handleFavoritesClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._film,

@@ -1,5 +1,6 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
+import {UserAction, UpdateType} from "../const.js";
 
 const createSmile = (smile) => `<img src=${smile} width="100%" height="100%" alt="emoji-smile">`;
 
@@ -164,15 +165,12 @@ export default class PopUp extends Smart {
     this._watchedToggleHandler = this._watchedToggleHandler.bind(this);
     this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
     this._commentTextInputHandler = this._commentTextInputHandler.bind(this);
-
     this._emotionSmileHandler = this._emotionSmileHandler.bind(this);
     this._emotionSleepingHandler = this._emotionSleepingHandler.bind(this);
     this._emotionPukeHandler = this._emotionPukeHandler.bind(this);
     this._emotionAngryHandler = this._emotionAngryHandler.bind(this);
-
-    this._swichMode = this._swichModeClick.bind(this);
+    this._swichModeClick = this._swichModeClick.bind(this);
     this._swichModeButton = this._swichModeButton.bind(this);
-
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
 
     this._setInnerHandlers();
@@ -241,6 +239,8 @@ export default class PopUp extends Smart {
   _watchlistToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._data,
@@ -254,6 +254,8 @@ export default class PopUp extends Smart {
   _watchedToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._data,
@@ -267,6 +269,8 @@ export default class PopUp extends Smart {
   _favoriteToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._data,
@@ -327,18 +331,22 @@ export default class PopUp extends Smart {
 
   _swichModeClick(evt) {
     evt.preventDefault();
-    this._callback.swichMode();
+    this._callback.swichModeClick();
   }
 
   _swichModeButton(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      this._callback.swichMode();
+      this._callback.swichModeButton();
     }
   }
 
-  setSwichMode(callback) {
-    this._callback.swichMode = callback;
+  setSwichModeClick(callback) {
+    this._callback.swichModeClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._swichModeClick);
+  }
+
+  setSwichModeButton(callback) {
+    this._callback.swichModeButton = callback;
     document.addEventListener(`keydown`, this._swichModeButton);
   }
 }

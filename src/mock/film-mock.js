@@ -48,6 +48,7 @@ const generateComment = () => {
   let comments = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     const comment = {
+      id: generateId(),
       text: `вот это фильм`,
       emotion: {
         smile: false,
