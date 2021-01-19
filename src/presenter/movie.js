@@ -1,6 +1,7 @@
 import Film from "../view/film.js";
 import PopUp from "../view/popup.js";
 import {UserAction, UpdateType} from "../const.js";
+import CommentModel from "../model/comment.js";
 
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
@@ -18,6 +19,7 @@ export default class Movie {
     this._filmComponent = null;
     this._filmPopUpComponent = null;
     this._mode = Mode.CARD;
+    this._commentModel = new CommentModel();
 
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
@@ -29,6 +31,8 @@ export default class Movie {
     this._film = film;
     const prevFilmComponent = this._filmComponent;
     const prevFilmPopUpComponent = this._filmPopUpComponent;
+
+    this._commentModel.setComments(this._film.comments);
 
     this._filmComponent = new Film(film);
     this._filmPopUpComponent = new PopUp(film, this._changeData);
@@ -122,5 +126,16 @@ export default class Movie {
             }
         )
     );
+  }
+
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.ADD_COMMENT:
+        this._commentModel.addComment(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._commentModel.deleteComment(updateType, update);
+        break;
+    }
   }
 }

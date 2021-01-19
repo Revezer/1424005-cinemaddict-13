@@ -24,7 +24,6 @@ render(headerElement, new UserRankViev().getElement(), RenderPosition.BEFOREEND)
 
 movieListPresenter.init();
 
-
 /*
 const filmSectionTopComponent = new FilmSection(`films-list--extra`, ``, `Top rated movies`);
 const filmListTopComponent = new FilmList(`top`);
