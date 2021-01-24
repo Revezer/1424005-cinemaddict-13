@@ -9,10 +9,10 @@ const mainElement = document.querySelector(`.main`);
 
 const MAX_FILMS = 20;
 
-const filmCard = new Array(MAX_FILMS).fill().map(mockfilm);
+const films = new Array(MAX_FILMS).fill().map(mockfilm);
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(filmCard);
+filmsModel.setFilms(films);
 
 const movieListPresenter = new MovieList(mainElement, filmsModel);
 /*
