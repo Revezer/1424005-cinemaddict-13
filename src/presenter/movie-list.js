@@ -26,7 +26,7 @@ export default class MovieList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handleButtonSwowMore = this._handleButtonSwowMore.bind(this);
+    this._handleButtonShowMore = this._handleButtonShowMore.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
 
@@ -150,10 +150,10 @@ export default class MovieList {
       render(this._filmSectionComponent.getElement(), this._buttonShowMoreComponent.getElement(), RenderPosition.BEFOREEND);
     }
 
-    this._buttonShowMoreComponent.setClickHandler(this._handleButtonSwowMore);
+    this._buttonShowMoreComponent.setClickHandler(this._handleButtonShowMore);
   }
 
-  _handleButtonSwowMore() {
+  _handleButtonShowMore() {
     const filmCount = this._getFilms().length;
     const newRenderedFilmCount = Math.min(filmCount, this._renderFilmCount + FILM_STEP);
     const films = this._getFilms().slice(this._renderFilmCount, newRenderedFilmCount);

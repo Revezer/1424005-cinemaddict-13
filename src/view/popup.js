@@ -15,7 +15,7 @@ const popUp = (film) => {
   const createComments = () => {
     return comments.map((element, index) => {
       const emotionKeys = Object.keys(element.emotion);
-      const emotion = emotionKeys.filter(key => element.emotion[key]);
+      const emotion = emotionKeys.filter((key) => element.emotion[key]);
       return `<li class="film-details__comment" data-id="${index}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji${emotion}">
@@ -242,26 +242,6 @@ export default class PopUp extends Smart {
     this.getElement()
       .querySelector(`#emoji-angry`)
       .addEventListener(`input`, this._emotionAngryHandler);
-
-    // [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].map(
-    //     (comment) => {
-    //       comment.addEventListener(`click`, (event) => {
-    //         const {id} = event.target.dataset;
-    //         const commentToDelete = document.querySelector(`.film-details__comment[data-id="${id}"]`);
-    //         if (commentToDelete) {
-    //           commentToDelete.remove();
-    //         }
-    //       });
-    //     });
-
-    // this.getElement()
-    // .querySelector(`.film-details__comment-input`)
-    // .addEventListener(`keypress`, (event) => {
-    //   const {ctrlKey, key} = event;
-    //   if (ctrlKey && key) {
-    //     comments.push();
-    //   }
-    // });
   }
 
   _commentTextInputHandler(evt) {
@@ -405,9 +385,7 @@ export default class PopUp extends Smart {
 
   _deleteCommnetHandler(evt) {
     const {id} = evt.target.dataset;
-    const commentToDelete = document.querySelector(`.film-details__comment[data-id="${id}"]`);
-    console.log(commentToDelete);
-    this._callback.deleteComment(commentToDelete);
+    this._callback.deleteComment(id);
   }
 
   setDeleteComment(callback) {
@@ -417,7 +395,7 @@ export default class PopUp extends Smart {
     }
     [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].map(
         (comment) => {
-          comment.addEventListener(`click`, this._deleteCommnetHandler());
+          comment.addEventListener(`click`, (evt) => this._deleteCommnetHandler(evt));
         });
   }
 
