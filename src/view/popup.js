@@ -1,5 +1,6 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
+import {UserAction, UpdateType} from "../const.js";
 
 const createSmile = (smile) => `<img src=${smile} width="100%" height="100%" alt="emoji-smile">`;
 
@@ -12,19 +13,23 @@ const popUp = (film) => {
   const quantityComments = Object.keys(comments).length;
 
   const createComments = () => {
-    return comments.map((element) => `<li class="film-details__comment">
+    return comments.map((element, index) => {
+      const emotionKeys = Object.keys(element.emotion);
+      const emotion = emotionKeys.filter((key) => element.emotion[key]);
+      return `<li class="film-details__comment" data-id="${index}">
       <span class="film-details__comment-emoji">
-        <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji${emotion}">
       </span>
       <div>
         <p class="film-details__comment-text">${element.text}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${element.commentAuthor}</span>
           <span class="film-details__comment-day">${dateComment(element.commentDate)}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-id="${index}">Delete</button>
         </p>
       </div>
-    </li>`).join(``);
+    </li>`;
+    }).join(``);
   };
 
 
@@ -154,26 +159,33 @@ const popUp = (film) => {
 </section>`;
 };
 
+const emotions = {
+  smile: `smile`,
+  sleeping: `sleeping`,
+  puke: `puke`,
+  angry: `angry`
+};
+
 export default class PopUp extends Smart {
   constructor(film, changeData) {
     super();
     this._data = film;
     this._changeData = changeData;
+    this._emotion = null;
     this._buttonCloseHandler = this._buttonCloseHandler.bind(this);
     this._watchlistToggleHandler = this._watchlistToggleHandler.bind(this);
     this._watchedToggleHandler = this._watchedToggleHandler.bind(this);
     this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
     this._commentTextInputHandler = this._commentTextInputHandler.bind(this);
-
     this._emotionSmileHandler = this._emotionSmileHandler.bind(this);
     this._emotionSleepingHandler = this._emotionSleepingHandler.bind(this);
     this._emotionPukeHandler = this._emotionPukeHandler.bind(this);
     this._emotionAngryHandler = this._emotionAngryHandler.bind(this);
-
-    this._swichMode = this._swichModeClick.bind(this);
+    this._swichModeClick = this._swichModeClick.bind(this);
     this._swichModeButton = this._swichModeButton.bind(this);
-
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._addComment = this.setAddComment.bind(this);
+    this._deleteComment = this.setDeleteComment.bind(this);
 
     this._setInnerHandlers();
 
@@ -201,6 +213,7 @@ export default class PopUp extends Smart {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setButtonClose(this._callback.buttonCloseClick);
+    this.setAddComment(this._callback.addComment);
   }
 
   _setInnerHandlers() {
@@ -241,6 +254,8 @@ export default class PopUp extends Smart {
   _watchlistToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._data,
@@ -254,6 +269,8 @@ export default class PopUp extends Smart {
   _watchedToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._data,
@@ -267,6 +284,8 @@ export default class PopUp extends Smart {
   _favoriteToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._data,
@@ -279,6 +298,7 @@ export default class PopUp extends Smart {
 
   _emotionSmileHandler(evt) {
     evt.preventDefault();
+    this.emotion = emotions.smile;
     this.updateData({
       emotionComment: createSmile(this.emotionSmile)
     });
@@ -286,6 +306,7 @@ export default class PopUp extends Smart {
 
   _emotionSleepingHandler(evt) {
     evt.preventDefault();
+    this.emotion = emotions.sleeping;
     this.updateData({
       emotionComment: createSmile(this.emotionSleeping)
     });
@@ -293,6 +314,7 @@ export default class PopUp extends Smart {
 
   _emotionPukeHandler(evt) {
     evt.preventDefault();
+    this.emotion = emotions.puke;
     this.updateData({
       emotionComment: createSmile(this.emotionPuke)
     });
@@ -300,6 +322,7 @@ export default class PopUp extends Smart {
 
   _emotionAngryHandler(evt) {
     evt.preventDefault();
+    this.emotion = emotions.angry;
     this.updateData({
       emotionComment: createSmile(this.emotionAngry)
     });
@@ -327,18 +350,51 @@ export default class PopUp extends Smart {
 
   _swichModeClick(evt) {
     evt.preventDefault();
-    this._callback.swichMode();
+    this._callback.swichModeClick();
   }
 
   _swichModeButton(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      this._callback.swichMode();
+      this._callback.swichModeButton();
     }
   }
 
-  setSwichMode(callback) {
-    this._callback.swichMode = callback;
+  setSwichModeClick(callback) {
+    this._callback.swichModeClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._swichModeClick);
+  }
+
+  setSwichModeButton(callback) {
+    this._callback.swichModeButton = callback;
     document.addEventListener(`keydown`, this._swichModeButton);
+  }
+
+  _addCommentHandler(evt) {
+    const {ctrlKey, key} = evt;
+    if (ctrlKey && key && this.emotion) {
+      const commentTextArea = evt.target;
+      this._callback.addComment(this.emotion, commentTextArea.value);
+      commentTextArea.value = ``;
+    }
+  }
+
+  setAddComment(callback) {
+    this._callback.addComment = callback;
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keypress`, (evt) => this._addCommentHandler(evt));
+  }
+
+  _deleteCommnetHandler(evt) {
+    const {id} = evt.target.dataset;
+    this._callback.deleteComment(id);
+  }
+
+  setDeleteComment(callback) {
+    this._callback.deleteComment = callback;
+    if (this._data.comments.length === 0) {
+      return;
+    }
+    Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`), (comment) => {
+      comment.addEventListener(`click`, (evt) => this._deleteCommnetHandler(evt));
+    });
   }
 }

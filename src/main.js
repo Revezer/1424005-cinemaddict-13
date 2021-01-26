@@ -2,16 +2,19 @@ import UserRankViev from "./view/userrank.js";
 import {mockfilm} from "./mock/film-mock.js";
 import {render, RenderPosition} from "./utils/render.js";
 import MovieList from "./presenter/movie-list.js";
+import FilmsModel from "./model/films.js";
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
-const movieListPresenter = new MovieList(mainElement);
-
 const MAX_FILMS = 20;
 
-const filmCard = new Array(MAX_FILMS).fill().map(mockfilm);
+const films = new Array(MAX_FILMS).fill().map(mockfilm);
 
+const filmsModel = new FilmsModel();
+filmsModel.setFilms(films);
+
+const movieListPresenter = new MovieList(mainElement, filmsModel);
 /*
 const filmCardExtraTop = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
 const filmCardExtraMost = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
@@ -19,8 +22,7 @@ const filmCardExtraMost = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
 
 render(headerElement, new UserRankViev().getElement(), RenderPosition.BEFOREEND);
 
-movieListPresenter.init(filmCard);
-
+movieListPresenter.init();
 
 /*
 const filmSectionTopComponent = new FilmSection(`films-list--extra`, ``, `Top rated movies`);

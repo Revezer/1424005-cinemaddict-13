@@ -1,5 +1,6 @@
 import Film from "../view/film.js";
 import PopUp from "../view/popup.js";
+import {UserAction, UpdateType} from "../const.js";
 
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
@@ -9,10 +10,11 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmContainer, changeData, changeMode) {
+  constructor(filmContainer, changeData, changeMode, modeEvent) {
     this._filmContainer = filmContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._modeEvent = modeEvent;
 
     this._filmComponent = null;
     this._filmPopUpComponent = null;
@@ -26,6 +28,7 @@ export default class Movie {
 
   init(film) {
     this._film = film;
+
     const prevFilmComponent = this._filmComponent;
     const prevFilmPopUpComponent = this._filmPopUpComponent;
 
@@ -39,7 +42,10 @@ export default class Movie {
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-    this._filmPopUpComponent.setSwichMode(this._swichModeClosePopUp);
+    this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
+    this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
+    this._filmPopUpComponent._addComment(this._addComment.bind(this));
+    this._filmPopUpComponent.setDeleteComment(this._removeComment.bind(this));
 
     if (prevFilmComponent === null || prevFilmPopUpComponent === null) {
       render(this._filmContainer.getElement(), this._filmComponent.getElement(), RenderPosition.BEFOREEND);
@@ -80,8 +86,70 @@ export default class Movie {
     this._mode = Mode.POPUP;
   }
 
+  _addComment(emotion, commentText) {
+    const comment = {
+      text: commentText,
+      emotion: {
+        smile: false,
+        sleeping: false,
+        puke: false,
+        angry: false
+      },
+      commentAuthor: `Валера`,
+      commentDate: new Date()
+    };
+    switch (emotion) {
+      case `smile`:
+        comment.emotion.smile = true;
+        break;
+      case `sleeping`:
+        comment.emotion.sleeping = true;
+        break;
+      case `puke`:
+        comment.emotion.puke = true;
+        break;
+      case `angry`:
+        comment.emotion.angry = true;
+        break;
+    }
+
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._film,
+            {
+              comments: [comment, ...this._film.comments]
+            }
+        )
+    );
+  }
+
+  _removeComment(id) {
+    const commentToDelete = document.querySelector(`.film-details__comment[data-id="${id}"]`);
+    if (commentToDelete) {
+      commentToDelete.remove();
+    }
+
+    const comments = this._film.comments.filter((val, index) => {
+      return index !== Number(id);
+    });
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._film,
+            {comments}
+        )
+    );
+  }
+
   _handleWatchlistClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -94,6 +162,8 @@ export default class Movie {
 
   _handleWatchedClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -106,6 +176,8 @@ export default class Movie {
 
   _handleFavoritesClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
