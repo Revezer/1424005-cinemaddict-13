@@ -393,21 +393,8 @@ export default class PopUp extends Smart {
     if (this._data.comments.length === 0) {
       return;
     }
-    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].map(
-        (comment) => {
-          comment.addEventListener(`click`, (evt) => this._deleteCommnetHandler(evt));
-        });
+    Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`), (comment) => {
+      comment.addEventListener(`click`, (evt) => this._deleteCommnetHandler(evt));
+    });
   }
-
-  // [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].map(
-  //       (comment) => {
-  //         comment.addEventListener(`click`, (event) => {
-  //           const {id} = event.target.dataset;
-  //           const commentToDelete = document.querySelector(`.film-details__comment[data-id="${id}"]`);
-  //           if (commentToDelete) {
-  //             commentToDelete.remove();
-  //           }
-  //         });
-  //       });
-
 }

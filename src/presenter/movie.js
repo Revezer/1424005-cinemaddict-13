@@ -86,20 +86,6 @@ export default class Movie {
     this._mode = Mode.POPUP;
   }
 
-  _handleWatchlistClick() {
-    this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              watchlist: !this._film.watchlist
-            }
-        )
-    );
-  }
-
   _addComment(emotion, commentText) {
     const comment = {
       text: commentText,
@@ -160,6 +146,20 @@ export default class Movie {
     );
   }
 
+  _handleWatchlistClick() {
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              watchlist: !this._film.watchlist
+            }
+        )
+    );
+  }
+
   _handleWatchedClick() {
     this._changeData(
         UserAction.UPDATE_FILM,
@@ -187,15 +187,4 @@ export default class Movie {
         )
     );
   }
-
-  // _handleViewAction(actionType, updateType, update) {
-  //   switch (actionType) {
-  //     case UserAction.ADD_COMMENT:
-  //       this._commentModel.addComment(updateType, update);
-  //       break;
-  //     case UserAction.DELETE_COMMENT:
-  //       this._commentModel.deleteComment(updateType, update);
-  //       break;
-  //   }
-  // }
 }
