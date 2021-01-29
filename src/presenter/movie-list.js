@@ -10,19 +10,22 @@ import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortFilmData, sortFilmRating} from "../utils/film.js";
 import {SortType, UserAction, UpdateType, FilterType} from "../const";
 import {filter} from "../utils/navigation.js";
+import LoadingView from "../view/loading.js";
 
 const FILM_STEP = 5;
 
 
 export default class MovieList {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, api) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._api = api;
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
     this._renderFilmCount = FILM_STEP;
     this._filterType = FilterType.ALL;
     this._filters = filter;
+    this._isLoading = true;
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -39,6 +42,7 @@ export default class MovieList {
     this._filmListComponent = new FilmList();
     this._buttonShowMoreComponent = new ButtonShowMore();
     this._noFilmComponent = new NoFilm();
+    this._loadingComponent = new LoadingView();
   }
 
   init() {
@@ -116,6 +120,10 @@ export default class MovieList {
   }
 
   _renderFilmList() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     this._renderNavigation();
     this._renderSort();
     this._renderFilmsSection();
@@ -123,6 +131,12 @@ export default class MovieList {
     render(this._filmSectionComponent.getElement(), this._filmListComponent.getElement(), RenderPosition.BEFOREEND);
     const filmCount = this._getFilms().length;
     const films = this._getFilmsFilter().slice(0, Math.min(filmCount, this._renderFilmCount));
+    // films.forEach((film) => {
+    //   this._api.getComments(film.id).then((comments) => {
+    //     film.comments = comments;
+    //     console.log(film);
+    //   });
+    // });
     this._renderFilms(films);
   }
 
@@ -153,7 +167,16 @@ export default class MovieList {
         this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
         this._renderFilmList();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderFilmList();
+        break;
     }
+  }
+
+  _renderLoading() {
+    render(this._container, this._loadingComponent.getElement(), RenderPosition.AFTERBEGIN);
   }
 
   _renderFilm(film) {
@@ -209,10 +232,10 @@ export default class MovieList {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
 
-    this._navigationComponent.getElement().remove();
     remove(this._navigationComponent);
     remove(this._noFilmComponent);
     remove(this._buttonShowMoreComponent);
+    remove(this._loadingComponent);
 
     if (resetRenderedTaskCount) {
       this._renderFilmCount = FILM_STEP;
