@@ -24,11 +24,5 @@ render(headerElement, new UserRankViev().getElement(), RenderPosition.BEFOREEND)
 movieListPresenter.init();
 
 api.getFilms().then((films) => {
-  films.forEach((film) => {
-    api.getComments(film.id).then((comments) => {
-      film.comments = comments;
-      console.log(films);
-    });
-  });
   filmsModel.setFilms(UpdateType.INIT, films);
 });

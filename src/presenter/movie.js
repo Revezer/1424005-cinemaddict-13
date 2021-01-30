@@ -10,11 +10,12 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmContainer, changeData, changeMode, modeEvent) {
+  constructor(filmContainer, changeData, changeMode, modeEvent, api) {
     this._filmContainer = filmContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._modeEvent = modeEvent;
+    this._api = api;
 
     this._filmComponent = null;
     this._filmPopUpComponent = null;
@@ -33,19 +34,25 @@ export default class Movie {
     const prevFilmPopUpComponent = this._filmPopUpComponent;
 
     this._filmComponent = new Film(film);
-    this._filmPopUpComponent = new PopUp(film, this._changeData);
 
-    this._filmComponent.setClickHandler(() => {
-      this._openPopUp(this._filmPopUpComponent);
+    this._api.getComments(this._film.id).then((comments) => {
+      this._film.comments = comments;
+      this._filmPopUpComponent = new PopUp(this._film, this._changeData);
+      this._filmComponent.setClickHandler(() => {
+        this._openPopUp(this._filmPopUpComponent);
+      });
+
+      this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
+      this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
+      this._filmPopUpComponent._addComment(this._addComment.bind(this));
+      this._filmPopUpComponent.setDeleteComment(this._removeComment.bind(this));
     });
+
 
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-    this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
-    this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
-    this._filmPopUpComponent._addComment(this._addComment.bind(this));
-    this._filmPopUpComponent.setDeleteComment(this._removeComment.bind(this));
+
 
     if (prevFilmComponent === null || prevFilmPopUpComponent === null) {
       render(this._filmContainer.getElement(), this._filmComponent.getElement(), RenderPosition.BEFOREEND);

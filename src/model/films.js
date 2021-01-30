@@ -91,7 +91,7 @@ export default class Films extends Observer {
             smile: comments.emotion === `smile` ? true : false,
             sleeping: comments.emotion === `sleeping` ? true : false,
             puke: comments.emotion === `puke` ? true : false,
-            angry: comments.watchlist === `angry` ? true : false
+            angry: comments.emotion === `angry` ? true : false
           },
           commentAuthor: comments.author,
           commentDate: comments.date !== null ? new Date(comments.date) : comments.date,

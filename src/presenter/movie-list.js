@@ -131,12 +131,6 @@ export default class MovieList {
     render(this._filmSectionComponent.getElement(), this._filmListComponent.getElement(), RenderPosition.BEFOREEND);
     const filmCount = this._getFilms().length;
     const films = this._getFilmsFilter().slice(0, Math.min(filmCount, this._renderFilmCount));
-    // films.forEach((film) => {
-    //   this._api.getComments(film.id).then((comments) => {
-    //     film.comments = comments;
-    //     console.log(film);
-    //   });
-    // });
     this._renderFilms(films);
   }
 
@@ -180,7 +174,7 @@ export default class MovieList {
   }
 
   _renderFilm(film) {
-    const moviePresenter = new Movie(this._filmListComponent, this._handleViewAction, this._handleModeChange, this._handleModelEvent);
+    const moviePresenter = new Movie(this._filmListComponent, this._handleViewAction, this._handleModeChange, this._handleModelEvent, this._api);
     moviePresenter.init(film);
     this._filmPresenter[film.id] = moviePresenter;
   }
