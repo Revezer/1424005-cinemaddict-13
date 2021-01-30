@@ -6,7 +6,7 @@ import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
 const Mode = {
   CARD: `CARD`,
-  POPUP: `POPUP`
+  POPUP: `POPUP`,
 };
 
 export default class Movie {
@@ -29,25 +29,23 @@ export default class Movie {
 
   init(film) {
     this._film = film;
-
     const prevFilmComponent = this._filmComponent;
     const prevFilmPopUpComponent = this._filmPopUpComponent;
 
     this._filmComponent = new Film(film);
+    this._filmPopUpComponent = new PopUp(this._film, this._changeData);
+
 
     this._api.getComments(this._film.id).then((comments) => {
       this._film.comments = comments;
-      this._filmPopUpComponent = new PopUp(this._film, this._changeData);
-      this._filmComponent.setClickHandler(() => {
-        this._openPopUp(this._filmPopUpComponent);
-      });
-
       this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
       this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
       this._filmPopUpComponent._addComment(this._addComment.bind(this));
       this._filmPopUpComponent.setDeleteComment(this._removeComment.bind(this));
+      this._filmComponent.setClickHandler(() => {
+        this._openPopUp(this._filmPopUpComponent);
+      });
     });
-
 
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
@@ -100,10 +98,10 @@ export default class Movie {
         smile: false,
         sleeping: false,
         puke: false,
-        angry: false
+        angry: false,
       },
       commentAuthor: `Валера`,
-      commentDate: new Date()
+      commentDate: new Date(),
     };
     switch (emotion) {
       case `smile`:
@@ -121,15 +119,15 @@ export default class Movie {
     }
 
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._film,
-            {
-              comments: [comment, ...this._film.comments]
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: [comment, ...this._film.comments],
+        },
+      )
     );
   }
 
@@ -143,55 +141,55 @@ export default class Movie {
       return index !== Number(id);
     });
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._film,
-            {comments}
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {comments},
+      ),
     );
   }
 
   _handleWatchlistClick() {
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              watchlist: !this._film.watchlist
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          watchlist: !this._film.watchlist,
+        },
+      ),
     );
   }
 
   _handleWatchedClick() {
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              watched: !this._film.watched
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          watched: !this._film.watched,
+        },
+      ),
     );
   }
 
   _handleFavoritesClick() {
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              favorites: !this._film.favorites
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          favorites: !this._film.favorites,
+        },
+      ),
     );
   }
 }

@@ -28,7 +28,6 @@ export default class Films extends Observer {
       update,
       ...this._films.slice(index + 1)
     ];
-
     this._notify(updateType, update);
   }
 

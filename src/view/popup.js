@@ -5,7 +5,27 @@ import {UserAction, UpdateType} from "../const.js";
 const createSmile = (smile) => `<img src=${smile} width="100%" height="100%" alt="emoji-smile">`;
 
 const popUp = (film) => {
-  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor, textComment, emotionComment} = film;
+  const {
+    picture,
+    name,
+    rating,
+    duration,
+    description,
+    comments,
+    releaseDate,
+    ageRating,
+    watchlist,
+    watched,
+    favorites,
+    genres,
+    originalName,
+    producer,
+    country,
+    screenwriter,
+    actor,
+    textComment,
+    emotionComment,
+  } = film;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
@@ -14,9 +34,10 @@ const popUp = (film) => {
 
   const createComments = () => {
     return comments.map((element, index) => {
-      const emotionKeys = Object.keys(element.emotion);
-      const emotion = emotionKeys.filter((key) => element.emotion[key]);
-      return `<li class="film-details__comment" data-id="${index}">
+      if (typeof element === `object`) {
+        const emotionKeys = Object.keys(element.emotion);
+        const emotion = emotionKeys.filter((key) => element.emotion[key]);
+        return `<li class="film-details__comment" data-id="${index}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji${emotion}">
       </span>
@@ -29,6 +50,8 @@ const popUp = (film) => {
         </p>
       </div>
     </li>`;
+      }
+      return ``;
     }).join(``);
   };
 
@@ -163,7 +186,7 @@ const emotions = {
   smile: `smile`,
   sleeping: `sleeping`,
   puke: `puke`,
-  angry: `angry`
+  angry: `angry`,
 };
 
 export default class PopUp extends Smart {
@@ -197,7 +220,7 @@ export default class PopUp extends Smart {
 
   reset(film) {
     this.updateData(
-        film
+      film,
     );
   }
 
@@ -247,52 +270,52 @@ export default class PopUp extends Smart {
   _commentTextInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      textComment: evt.target.value
+      textComment: evt.target.value,
     }, true);
   }
 
   _watchlistToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._data,
-            {
-              watchlist: !this._data.watchlist
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._data,
+        {
+          watchlist: !this._data.watchlist,
+        },
+      ),
     );
   }
 
   _watchedToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._data,
-            {
-              watched: !this._data.watched
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._data,
+        {
+          watched: !this._data.watched,
+        },
+      ),
     );
   }
 
   _favoriteToggleHandler(evt) {
     evt.preventDefault();
     this._changeData(
-        UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._data,
-            {
-              favorites: !this._data.favorites
-            }
-        )
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._data,
+        {
+          favorites: !this._data.favorites,
+        },
+      ),
     );
   }
 
@@ -300,7 +323,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.smile;
     this.updateData({
-      emotionComment: createSmile(this.emotionSmile)
+      emotionComment: createSmile(this.emotionSmile),
     });
   }
 
@@ -308,7 +331,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.sleeping;
     this.updateData({
-      emotionComment: createSmile(this.emotionSleeping)
+      emotionComment: createSmile(this.emotionSleeping),
     });
   }
 
@@ -316,7 +339,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.puke;
     this.updateData({
-      emotionComment: createSmile(this.emotionPuke)
+      emotionComment: createSmile(this.emotionPuke),
     });
   }
 
@@ -324,7 +347,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.angry;
     this.updateData({
-      emotionComment: createSmile(this.emotionAngry)
+      emotionComment: createSmile(this.emotionAngry),
     });
   }
 
