@@ -21,5 +21,6 @@ export const FilterType = {
   ALL: `all`,
   WATCHLIST: `watchlist`,
   WATCHED: `watched`,
-  FAVORITES: `favorites`
+  FAVORITES: `favorites`,
+  STATS: `stats`
 };

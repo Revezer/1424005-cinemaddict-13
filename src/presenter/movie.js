@@ -11,12 +11,13 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmContainer, changeData, changeMode, modeEvent, api) {
+  constructor(filmContainer, changeData, changeMode, modeEvent, api, filmsModel) {
     this._filmContainer = filmContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._modeEvent = modeEvent;
     this._api = api;
+    this._filmsModel = filmsModel;
     this._commentModel = new CommentModel();
 
     this._filmComponent = null;
@@ -107,7 +108,9 @@ export default class Movie {
   }
 
   _removeComment(id) {
-    this._api.deleteComment(id).then(() => this._commentModel.deleteComment(UpdateType.PATCH, id));
+    this._commentModel.toggleCommentLoading(UpdateType.PATCH, id);
+    this._api.deleteComment(id).then(() => this._commentModel.deleteComment(UpdateType.PATCH, id))
+    .catch(() => this._commentModel.toggleCommentLoading(UpdateType.PATCH, id));
   }
 
   _addComment(emotion, commentText) {
@@ -136,8 +139,12 @@ export default class Movie {
         comment.emotion.angry = true;
         break;
     }
-
-    this._api.addComment(this._film.id, comment).then((newComment) => this._commentModel.addComment(UpdateType.PATCH, newComment));
+    this._filmsModel.toggleFilmLoading(UpdateType.PATCH, this._film.id);
+    this._api.addComment(this._film.id, comment)
+    .then((newComment) => {
+      this._commentModel.addComment(UpdateType.PATCH, newComment);
+    })
+    .finally(() => this._filmsModel.toggleFilmLoading(UpdateType.PATCH, this._film.id));
   }
 
   _handleWatchlistClick() {

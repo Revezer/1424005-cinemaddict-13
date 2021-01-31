@@ -22,6 +22,12 @@ export default class Comments extends Observer {
     this._notify(updateType);
   }
 
+  toggleCommentLoading(updateType, id) {
+    const commentIndex = this._comments.findIndex((comment) => comment.id === id);
+    this._comments[commentIndex].loading = !this._comments[commentIndex].loading;
+    this._notify(updateType);
+  }
+
   deleteComment(updateType, id) {
     const commentIndex = this._comments.findIndex((comment) => comment.id === id);
     this._comments = [...this._comments.slice(0, commentIndex), ...this._comments.slice(commentIndex + 1)];
@@ -43,6 +49,7 @@ export default class Comments extends Observer {
           },
           commentAuthor: author,
           commentDate: date !== null ? new Date(date) : date,
+          loading: false
         }
     );
 

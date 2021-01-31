@@ -31,6 +31,12 @@ export default class Films extends Observer {
     this._notify(updateType, update);
   }
 
+  toggleFilmLoading(updateType, id) {
+    const index = this._films.findIndex((film) => film.id === id);
+    this._films[index].loading = !this._films[index].loading;
+    this._notify(updateType, this._films[index]);
+  }
+
   static adaptToClient(film) {
     const adaptedFilm = Object.assign(
         {},
@@ -55,11 +61,12 @@ export default class Films extends Observer {
           favorites: film.user_details.favorite,
           textComment: ``,
           emotionComment: ``,
-          // film.user_details.watching_date дата просмотра
+          commentIds: film.comments,
+          loading: false,
+          watchingDate: film.user_details.watching_date
         }
     );
 
-    // Ненужные ключи мы удаляем
     delete adaptedFilm.film_info.poster;
     delete adaptedFilm.film_info.alternative_title;
     delete adaptedFilm.film_info.total_rating;
@@ -76,6 +83,7 @@ export default class Films extends Observer {
     delete adaptedFilm.user_details.watchlist;
     delete adaptedFilm.user_details.already_watched;
     delete adaptedFilm.user_details.favorit;
+    delete adaptedFilm.user_details.watching_date;
 
     return adaptedFilm;
   }
@@ -106,13 +114,12 @@ export default class Films extends Observer {
             "watchlist": film.watchlist,
             "already_watched": film.watched,
             "favorite": film.favorites,
-            "watching_date": null
+            "watching_date": film.watchingDate,
           },
-          "comments": film.comments
+          "comments": film.commentIds
         }
     );
 
-    // Ненужные ключи мы удаляем
     delete adaptedFilm.picture;
     delete adaptedFilm.name;
     delete adaptedFilm.rating;
