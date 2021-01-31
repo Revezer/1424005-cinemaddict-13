@@ -2,7 +2,7 @@ import Abstract from "./abstract.js";
 import dayjs from "dayjs";
 
 const textDescription = (description) => {
-  let text = description.join(``);
+  let text = description;
   if (text.length > 140) {
     text = text.substring(0, 139) + `...`;
   }

@@ -1,45 +1,28 @@
 import UserRankViev from "./view/userrank.js";
-import {mockfilm} from "./mock/film-mock.js";
+// import {mockfilm} from "./mock/film-mock.js";
 import {render, RenderPosition} from "./utils/render.js";
 import MovieList from "./presenter/movie-list.js";
 import FilmsModel from "./model/films.js";
+import Api from "./utils/api.js";
+import {UpdateType} from "./const.js";
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
-const MAX_FILMS = 20;
+// const MAX_FILMS = 20;
+const AUTHORIZATION = `Basic polksdi32wedczseqwasdfssvththggf2fgd5fg`;
+const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 
-const films = new Array(MAX_FILMS).fill().map(mockfilm);
+// const films = new Array(MAX_FILMS).fill().map(mockfilm);
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
+// filmsModel.setFilms(films);
 
-const movieListPresenter = new MovieList(mainElement, filmsModel);
-/*
-const filmCardExtraTop = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
-const filmCardExtraMost = new Array(MAX_FILMS_EXTRA).fill().map(mockfilm);
-*/
-
+const movieListPresenter = new MovieList(mainElement, filmsModel, api);
 render(headerElement, new UserRankViev().getElement(), RenderPosition.BEFOREEND);
-
 movieListPresenter.init();
 
-/*
-const filmSectionTopComponent = new FilmSection(`films-list--extra`, ``, `Top rated movies`);
-const filmListTopComponent = new FilmList(`top`);
-const filmSectionMostComponent = new FilmSection(`films-list--extra`, ``, `Most commented`);
-const filmListMostComponent = new FilmList(`most`);
-
-render(filmsComponent.getElement(), filmSectionTopComponent.getElement(), RenderPosition.BEFOREEND);
-render(filmsComponent.getElement(), filmSectionMostComponent.getElement(), RenderPosition.BEFOREEND);
-render(filmSectionTopComponent.getElement(), filmListTopComponent.getElement(), RenderPosition.BEFOREEND);
-render(filmSectionMostComponent.getElement(), filmListMostComponent.getElement(), RenderPosition.BEFOREEND);
-
-filmCardExtraTop.forEach((element) => {
-  renderFilm(filmListTopComponent.getElement(), element);
+api.getFilms().then((films) => {
+  filmsModel.setFilms(UpdateType.INIT, films);
 });
-
-filmCardExtraMost.forEach((element) => {
-  renderFilm(filmListMostComponent.getElement(), element);
-});
-*/

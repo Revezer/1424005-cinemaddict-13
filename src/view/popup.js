@@ -5,7 +5,27 @@ import {UserAction, UpdateType} from "../const.js";
 const createSmile = (smile) => `<img src=${smile} width="100%" height="100%" alt="emoji-smile">`;
 
 const popUp = (film) => {
-  const {picture, name, rating, duration, description, comments, releaseDate, ageRating, watchlist, watched, favorites, genres, originalName, producer, country, screenwriter, actor, textComment, emotionComment} = film;
+  const {
+    picture,
+    name,
+    rating,
+    duration,
+    description,
+    comments,
+    releaseDate,
+    ageRating,
+    watchlist,
+    watched,
+    favorites,
+    genres,
+    originalName,
+    producer,
+    country,
+    screenwriter,
+    actor,
+    textComment,
+    emotionComment,
+  } = film;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
@@ -13,10 +33,11 @@ const popUp = (film) => {
   const quantityComments = Object.keys(comments).length;
 
   const createComments = () => {
-    return comments.map((element, index) => {
-      const emotionKeys = Object.keys(element.emotion);
-      const emotion = emotionKeys.filter((key) => element.emotion[key]);
-      return `<li class="film-details__comment" data-id="${index}">
+    return comments.map((element) => {
+      if (typeof element === `object`) {
+        const emotionKeys = Object.keys(element.emotion);
+        const emotion = emotionKeys.filter((key) => element.emotion[key]);
+        return `<li class="film-details__comment" data-id="${element.id}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji${emotion}">
       </span>
@@ -25,10 +46,12 @@ const popUp = (film) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${element.commentAuthor}</span>
           <span class="film-details__comment-day">${dateComment(element.commentDate)}</span>
-          <button class="film-details__comment-delete" data-id="${index}">Delete</button>
+          <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
         </p>
       </div>
     </li>`;
+      }
+      return ``;
     }).join(``);
   };
 
@@ -163,15 +186,17 @@ const emotions = {
   smile: `smile`,
   sleeping: `sleeping`,
   puke: `puke`,
-  angry: `angry`
+  angry: `angry`,
 };
 
 export default class PopUp extends Smart {
-  constructor(film, changeData) {
+  constructor(film, changeData, api, commentModel) {
     super();
     this._data = film;
     this._changeData = changeData;
     this._emotion = null;
+    this._api = api;
+    this._commentModel = commentModel;
     this._buttonCloseHandler = this._buttonCloseHandler.bind(this);
     this._watchlistToggleHandler = this._watchlistToggleHandler.bind(this);
     this._watchedToggleHandler = this._watchedToggleHandler.bind(this);
@@ -184,8 +209,8 @@ export default class PopUp extends Smart {
     this._swichModeClick = this._swichModeClick.bind(this);
     this._swichModeButton = this._swichModeButton.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._addComment = this.setAddComment.bind(this);
-    this._deleteComment = this.setDeleteComment.bind(this);
+    this._setAddComment = this.setAddComment.bind(this);
+    this._setDeleteComment = this._setDeleteComment.bind(this);
 
     this._setInnerHandlers();
 
@@ -214,6 +239,7 @@ export default class PopUp extends Smart {
     this._setInnerHandlers();
     this.setButtonClose(this._callback.buttonCloseClick);
     this.setAddComment(this._callback.addComment);
+    this._setDeleteComment(this._callback.deleteComment);
   }
 
   _setInnerHandlers() {
@@ -247,7 +273,7 @@ export default class PopUp extends Smart {
   _commentTextInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      textComment: evt.target.value
+      textComment: evt.target.value,
     }, true);
   }
 
@@ -260,7 +286,7 @@ export default class PopUp extends Smart {
             {},
             this._data,
             {
-              watchlist: !this._data.watchlist
+              watchlist: !this._data.watchlist,
             }
         )
     );
@@ -275,7 +301,7 @@ export default class PopUp extends Smart {
             {},
             this._data,
             {
-              watched: !this._data.watched
+              watched: !this._data.watched,
             }
         )
     );
@@ -300,7 +326,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.smile;
     this.updateData({
-      emotionComment: createSmile(this.emotionSmile)
+      emotionComment: createSmile(this.emotionSmile),
     });
   }
 
@@ -308,7 +334,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.sleeping;
     this.updateData({
-      emotionComment: createSmile(this.emotionSleeping)
+      emotionComment: createSmile(this.emotionSleeping),
     });
   }
 
@@ -316,7 +342,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.puke;
     this.updateData({
-      emotionComment: createSmile(this.emotionPuke)
+      emotionComment: createSmile(this.emotionPuke),
     });
   }
 
@@ -324,7 +350,7 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.emotion = emotions.angry;
     this.updateData({
-      emotionComment: createSmile(this.emotionAngry)
+      emotionComment: createSmile(this.emotionAngry),
     });
   }
 
@@ -375,6 +401,7 @@ export default class PopUp extends Smart {
       const commentTextArea = evt.target;
       this._callback.addComment(this.emotion, commentTextArea.value);
       commentTextArea.value = ``;
+      this._data.textComment = ``;
     }
   }
 
@@ -383,18 +410,19 @@ export default class PopUp extends Smart {
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keypress`, (evt) => this._addCommentHandler(evt));
   }
 
-  _deleteCommnetHandler(evt) {
+  _deleteCommentHandler(evt) {
+    evt.preventDefault();
     const {id} = evt.target.dataset;
     this._callback.deleteComment(id);
   }
 
-  setDeleteComment(callback) {
+  _setDeleteComment(callback) {
     this._callback.deleteComment = callback;
     if (this._data.comments.length === 0) {
       return;
     }
     Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`), (comment) => {
-      comment.addEventListener(`click`, (evt) => this._deleteCommnetHandler(evt));
+      comment.addEventListener(`click`, (evt) => this._deleteCommentHandler(evt));
     });
   }
 }
