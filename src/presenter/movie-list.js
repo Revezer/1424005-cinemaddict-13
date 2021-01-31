@@ -143,7 +143,7 @@ export default class MovieList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((film) => this._filmsModel.updateFilm(updateType, film));
         break;
     }
   }

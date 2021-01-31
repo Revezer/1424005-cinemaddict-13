@@ -80,52 +80,35 @@ export default class Films extends Observer {
     return adaptedFilm;
   }
 
-  static adaptToClientComment(comments) {
-    const adapterComment = Object.assign(
-        {},
-        comments,
-        {
-          text: comments.comment,
-          emotion: {
-            smile: comments.emotion === `smile` ? true : false,
-            sleeping: comments.emotion === `sleeping` ? true : false,
-            puke: comments.emotion === `puke` ? true : false,
-            angry: comments.emotion === `angry` ? true : false
-          },
-          commentAuthor: comments.author,
-          commentDate: comments.date !== null ? new Date(comments.date) : comments.date,
-        }
-    );
-
-    delete adapterComment.comment;
-    delete adapterComment.author;
-    delete adapterComment.date;
-
-    return adapterComment;
-  }
-
   static adaptToServer(film) {
     const adaptedFilm = Object.assign(
         {},
-        film,
         {
-          "film_info.poster": film.picture,
-          "film_info.alternative_title": film.name,
-          "film_info.total_rating": film.rating,
-          "film_info.runtime": film.duration,
-          "film_info.description": film.description,
-          "film_info.release.date": film.releaseDate instanceof Date ? film.releaseDate.toISOString() : null,
-          "film_info.title": film.originalName,
-          "film_info.director": film.producer,
-          "film_info.writers": film.screenwriter,
-          "film_info.actors": film.actor,
-          "film_info.release.country": film.country,
-          "film_info.genre": film.genres,
-          "film_info.age_rating": film.ageRating,
-          "user_details.watchlist": film.watchlist,
-          "user_details.already_watched": film.watched,
-          "user_details.favorit": film.favorites,
-          // film.user_details.watching_date дата просмотра
+          "id": film.id,
+          "film_info": {
+            "poster": film.picture,
+            'alternative_title': film.name,
+            "total_rating": film.rating,
+            "runtime": film.duration,
+            "description": film.description,
+            "title": film.originalName,
+            "director": film.producer,
+            "writers": film.screenwriter,
+            "actors": film.actor,
+            "genre": film.genres,
+            "age_rating": film.ageRating,
+            "release": {
+              "date": film.releaseDate instanceof Date ? film.releaseDate.toISOString() : null,
+              "release_country": film.country,
+            }
+          },
+          "user_details": {
+            "watchlist": film.watchlist,
+            "already_watched": film.watched,
+            "favorite": film.favorites,
+            "watching_date": null
+          },
+          "comments": film.comments
         }
     );
 

@@ -1,6 +1,7 @@
 import Film from "../view/film.js";
 import PopUp from "../view/popup.js";
 import {UserAction, UpdateType} from "../const.js";
+import CommentModel from "../model/comments.js";
 
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 
@@ -16,6 +17,7 @@ export default class Movie {
     this._changeMode = changeMode;
     this._modeEvent = modeEvent;
     this._api = api;
+    this._commentModel = new CommentModel();
 
     this._filmComponent = null;
     this._filmPopUpComponent = null;
@@ -24,7 +26,12 @@ export default class Movie {
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._swichModeClosePopUp = this._swichModeClosePopUp.bind(this);
+    this._addComment = this._addComment.bind(this);
+    this._removeComment = this._removeComment.bind(this);
+
+    this._commentModel.addObserver(this._handleModelEvent);
   }
 
   init(film) {
@@ -33,24 +40,23 @@ export default class Movie {
     const prevFilmPopUpComponent = this._filmPopUpComponent;
 
     this._filmComponent = new Film(film);
-    this._filmPopUpComponent = new PopUp(this._film, this._changeData);
+    this._filmPopUpComponent = new PopUp(this._film, this._changeData, this._api, this._commentModel);
 
-
-    this._api.getComments(this._film.id).then((comments) => {
-      this._film.comments = comments;
-      this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
-      this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
-      this._filmPopUpComponent._addComment(this._addComment.bind(this));
-      this._filmPopUpComponent.setDeleteComment(this._removeComment.bind(this));
-      this._filmComponent.setClickHandler(() => {
+    this._filmComponent.setClickHandler(() => {
+      this._api.getComments(this._film.id).then((comments) => {
+        this._commentModel.setComments(UpdateType.PATCH, comments);
         this._openPopUp(this._filmPopUpComponent);
       });
     });
 
+    this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
+    this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
+    this._filmPopUpComponent._setAddComment(this._addComment);
+    this._filmPopUpComponent._setDeleteComment(this._removeComment);
+
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-
 
     if (prevFilmComponent === null || prevFilmPopUpComponent === null) {
       render(this._filmContainer.getElement(), this._filmComponent.getElement(), RenderPosition.BEFOREEND);
@@ -67,6 +73,15 @@ export default class Movie {
 
     remove(prevFilmComponent);
     remove(prevFilmPopUpComponent);
+  }
+
+  _handleModelEvent(updateType) {
+    const comments = this._commentModel.getComments();
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._filmPopUpComponent.updateData({comments});
+        break;
+    }
   }
 
   resetViev() {
@@ -89,6 +104,10 @@ export default class Movie {
     document.body.classList.add(`hide-overflow`);
     filmPopUp.setButtonClose();
     this._mode = Mode.POPUP;
+  }
+
+  _removeComment(id) {
+    this._api.deleteComment(id).then(() => this._commentModel.deleteComment(UpdateType.PATCH, id));
   }
 
   _addComment(emotion, commentText) {
@@ -118,78 +137,48 @@ export default class Movie {
         break;
     }
 
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          comments: [comment, ...this._film.comments],
-        },
-      )
-    );
-  }
-
-  _removeComment(id) {
-    const commentToDelete = document.querySelector(`.film-details__comment[data-id="${id}"]`);
-    if (commentToDelete) {
-      commentToDelete.remove();
-    }
-
-    const comments = this._film.comments.filter((val, index) => {
-      return index !== Number(id);
-    });
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {comments},
-      ),
-    );
+    this._api.addComment(this._film.id, comment).then((newComment) => this._commentModel.addComment(UpdateType.PATCH, newComment));
   }
 
   _handleWatchlistClick() {
     this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
-      Object.assign(
-        {},
-        this._film,
-        {
-          watchlist: !this._film.watchlist,
-        },
-      ),
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              watchlist: !this._film.watchlist,
+            }
+        )
     );
   }
 
   _handleWatchedClick() {
     this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
-      Object.assign(
-        {},
-        this._film,
-        {
-          watched: !this._film.watched,
-        },
-      ),
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              watched: !this._film.watched,
+            }
+        )
     );
   }
 
   _handleFavoritesClick() {
     this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
-      Object.assign(
-        {},
-        this._film,
-        {
-          favorites: !this._film.favorites,
-        },
-      ),
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              favorites: !this._film.favorites
+            }
+        )
     );
   }
 }
