@@ -20,7 +20,7 @@ export default class Navigation extends Abstract {
         <a href="#history" class="main-navigation__item ${this._currentFilter === `watched` ? `main-navigation__item--active` : ``}" data-sort-type="${FilterType.WATCHED}">History <span class="main-navigation__item-count">${this.watchedCount}</span></a>
         <a href="#favorites" class="main-navigation__item ${this._currentFilter === `favorites` ? `main-navigation__item--active` : ``}" data-sort-type="${FilterType.FAVORITES}">Favorites <span class="main-navigation__item-count">${this.favoritesCount}</span></a>
       </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
+      <a href="#stats" class="main-navigation__additional ${this._currentFilter === `stats` ? `main-navigation__item--active` : ``}" data-sort-type="${FilterType.STATS}">Stats</a>
     </nav>`;
   }
 

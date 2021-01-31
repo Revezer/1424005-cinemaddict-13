@@ -25,6 +25,7 @@ const popUp = (film) => {
     actor,
     textComment,
     emotionComment,
+    loading
   } = film;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
@@ -46,7 +47,7 @@ const popUp = (film) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${element.commentAuthor}</span>
           <span class="film-details__comment-day">${dateComment(element.commentDate)}</span>
-          <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
+          <button class="film-details__comment-delete" data-id="${element.id}" ${element.loading ? `disabled` : ``}>${element.loading ? `Deleting...` : `Delete`}</button>
         </p>
       </div>
     </li>`;
@@ -62,8 +63,8 @@ const popUp = (film) => {
 
   const commentsTemplate = createComments();
   const genreTemplate = createGenre();
-
-  return `<section class="film-details">
+  console.log(loading);
+  return `<section class="film-details ${loading ? `film-details--loading` : ``}">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">

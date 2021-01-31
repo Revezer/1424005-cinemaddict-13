@@ -11,6 +11,7 @@ import {sortFilmData, sortFilmRating} from "../utils/film.js";
 import {SortType, UserAction, UpdateType, FilterType} from "../const";
 import {filter} from "../utils/navigation.js";
 import LoadingView from "../view/loading.js";
+import StatsView from "../view/stats.js";
 
 const FILM_STEP = 5;
 
@@ -33,6 +34,7 @@ export default class MovieList {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleButtonShowMore = this._handleButtonShowMore.bind(this);
     this._handleSortNavigationChange = this._handleSortNavigationChange.bind(this);
+    this._showStats = this._showStats.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
 
@@ -43,6 +45,7 @@ export default class MovieList {
     this._buttonShowMoreComponent = new ButtonShowMore();
     this._noFilmComponent = new NoFilm();
     this._loadingComponent = new LoadingView();
+    this._statsView = new StatsView();
   }
 
   init() {
@@ -81,18 +84,24 @@ export default class MovieList {
     let watched = this._filters[FilterType.WATCHED](films).length;
     let favorites = this._filters[FilterType.FAVORITES](films).length;
     this._navigationComponent = new Navigation(watchlist, watched, favorites, this._filterType);
-    render(this._container, this._navigationComponent.getElement(), RenderPosition.BEFOREEND);
+    render(this._container, this._navigationComponent.getElement(), RenderPosition.AFTERBEGIN);
     this._navigationComponent.setSortTypeChangeHandler(this._handleSortNavigationChange);
+    // this._navigationComponent.setStatsNavigationHandler(this._showStats);
   }
 
   _handleSortNavigationChange(navigationType) {
     if (this._filterType === navigationType) {
       return;
     }
-
     this._filterType = navigationType;
     this._clearBoard({resetRenderedTaskCount: true});
-    this._renderFilmList();
+
+
+    if (navigationType === FilterType.STATS) {
+      this._showStats();
+    } else {
+      this._renderFilmList();
+    }
   }
 
 
@@ -117,6 +126,16 @@ export default class MovieList {
 
   _renderFilmSection() {
     render(this._filmsSectionComponent.getElement(), this._filmSectionComponent.getElement(), RenderPosition.BEFOREEND);
+  }
+
+  _showStats() {
+    this._clearBoard();
+    this._renderNavigation();
+    this._renderStats();
+  }
+
+  _renderStats() {
+    render(this._container, this._statsView.getElement(), RenderPosition.BEFOREEND);
   }
 
   _renderFilmList() {
@@ -174,7 +193,7 @@ export default class MovieList {
   }
 
   _renderFilm(film) {
-    const moviePresenter = new Movie(this._filmListComponent, this._handleViewAction, this._handleModeChange, this._handleModelEvent, this._api);
+    const moviePresenter = new Movie(this._filmListComponent, this._handleViewAction, this._handleModeChange, this._handleModelEvent, this._api, this._filmsModel);
     moviePresenter.init(film);
     this._filmPresenter[film.id] = moviePresenter;
   }
@@ -230,6 +249,8 @@ export default class MovieList {
     remove(this._noFilmComponent);
     remove(this._buttonShowMoreComponent);
     remove(this._loadingComponent);
+    remove(this._sortComponent);
+    remove(this._statsView);
 
     if (resetRenderedTaskCount) {
       this._renderFilmCount = FILM_STEP;
