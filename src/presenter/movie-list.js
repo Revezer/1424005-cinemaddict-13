@@ -45,7 +45,6 @@ export default class MovieList {
     this._buttonShowMoreComponent = new ButtonShowMore();
     this._noFilmComponent = new NoFilm();
     this._loadingComponent = new LoadingView();
-    this._statsView = new StatsView();
   }
 
   init() {
@@ -83,6 +82,7 @@ export default class MovieList {
     let watchlist = this._filters[FilterType.WATCHLIST](films).length;
     let watched = this._filters[FilterType.WATCHED](films).length;
     let favorites = this._filters[FilterType.FAVORITES](films).length;
+    this._statsComponent = new StatsView(films);
     this._navigationComponent = new Navigation(watchlist, watched, favorites, this._filterType);
     render(this._container, this._navigationComponent.getElement(), RenderPosition.AFTERBEGIN);
     this._navigationComponent.setSortTypeChangeHandler(this._handleSortNavigationChange);
@@ -135,7 +135,7 @@ export default class MovieList {
   }
 
   _renderStats() {
-    render(this._container, this._statsView.getElement(), RenderPosition.BEFOREEND);
+    render(this._container, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
   _renderFilmList() {
@@ -250,7 +250,7 @@ export default class MovieList {
     remove(this._buttonShowMoreComponent);
     remove(this._loadingComponent);
     remove(this._sortComponent);
-    remove(this._statsView);
+    remove(this._statsComponent);
 
     if (resetRenderedTaskCount) {
       this._renderFilmCount = FILM_STEP;

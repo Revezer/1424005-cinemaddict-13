@@ -61,7 +61,6 @@ export default class Films extends Observer {
           favorites: film.user_details.favorite,
           textComment: ``,
           emotionComment: ``,
-          commentIds: film.comments,
           loading: false,
           watchingDate: film.user_details.watching_date
         }
@@ -116,7 +115,7 @@ export default class Films extends Observer {
             "favorite": film.favorites,
             "watching_date": film.watchingDate,
           },
-          "comments": film.commentIds
+          "comments": film.comments.map((comment) => typeof comment === `object` ? comment.id : comment)
         }
     );
 

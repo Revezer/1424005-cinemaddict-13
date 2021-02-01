@@ -143,6 +143,7 @@ export default class Movie {
     this._api.addComment(this._film.id, comment)
     .then((newComment) => {
       this._commentModel.addComment(UpdateType.PATCH, newComment);
+      this._filmsModel.updateFilm(UpdateType.PATCH, this._film.id);
     })
     .finally(() => this._filmsModel.toggleFilmLoading(UpdateType.PATCH, this._film.id));
   }

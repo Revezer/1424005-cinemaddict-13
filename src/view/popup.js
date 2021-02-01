@@ -28,6 +28,14 @@ const popUp = (film) => {
     loading
   } = film;
 
+  const genresQuantity = () => {
+    if (genres.length === 1) {
+      return `Genre`;
+    } else {
+      return `Genres`;
+    }
+  };
+
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
 
@@ -63,7 +71,6 @@ const popUp = (film) => {
 
   const commentsTemplate = createComments();
   const genreTemplate = createGenre();
-  console.log(loading);
   return `<section class="film-details ${loading ? `film-details--loading` : ``}">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
@@ -74,7 +81,7 @@ const popUp = (film) => {
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="${picture}" alt="">
 
-          <p class="film-details__age">${ageRating}</p>
+          <p class="film-details__age">${ageRating}+</p>
         </div>
 
         <div class="film-details__info">
@@ -115,7 +122,7 @@ const popUp = (film) => {
               <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genresQuantity()}</td>
               <td class="film-details__cell">
               ${genreTemplate}
               </td>
