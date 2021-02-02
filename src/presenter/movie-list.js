@@ -12,7 +12,7 @@ import {SortType, UserAction, UpdateType, FilterType, StatPeriod} from "../const
 import {filter} from "../utils/navigation.js";
 import LoadingView from "../view/loading.js";
 import StatsView from "../view/stats.js";
-import UserRankViev from "../view/userrank.js";
+import UserRankViev from "../view/user-rank.js";
 
 const FILM_STEP = 5;
 
@@ -81,9 +81,9 @@ export default class MovieList {
   _renderNavigation() {
     const films = this._getFilms();
     const filmsWatched = this._filters[FilterType.WATCHED](films);
-    let watchlist = this._filters[FilterType.WATCHLIST](films).length;
-    let watched = this._filters[FilterType.WATCHED](films).length;
-    let favorites = this._filters[FilterType.FAVORITES](films).length;
+    const watchlist = this._filters[FilterType.WATCHLIST](films).length;
+    const watched = this._filters[FilterType.WATCHED](films).length;
+    const favorites = this._filters[FilterType.FAVORITES](films).length;
     this._statsComponent = new StatsView(filmsWatched, this._statPeriod);
     this._navigationComponent = new Navigation(watchlist, watched, favorites, this._filterType);
     render(this._container, this._navigationComponent.getElement(), RenderPosition.AFTERBEGIN);
@@ -131,7 +131,7 @@ export default class MovieList {
   _renderUserRank() {
     const films = this._getFilms();
     const headerElement = document.querySelector(`.header`);
-    let watched = this._filters[FilterType.WATCHED](films).length;
+    const watched = this._filters[FilterType.WATCHED](films).length;
     this.userRankComponent = new UserRankViev(watched);
     render(headerElement, this.userRankComponent.getElement(), RenderPosition.BEFOREEND);
   }

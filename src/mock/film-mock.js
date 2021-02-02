@@ -34,7 +34,7 @@ const generateDateComment = () => {
 
 
 const generatePicture = () => {
-  let picture = [
+  const picture = [
     `./images/posters/popeye-meets-sinbad.png`,
     `./images/posters/made-for-each-other.png`,
     `./images/posters/sagebrush-trail.jpg`,
@@ -45,7 +45,7 @@ const generatePicture = () => {
 };
 
 const generateComment = () => {
-  let comments = [];
+  const comments = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     const comment = {
       id: generateId(),
