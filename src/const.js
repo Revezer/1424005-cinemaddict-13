@@ -24,3 +24,11 @@ export const FilterType = {
   FAVORITES: `favorites`,
   STATS: `stats`
 };
+
+export const StatPeriod = {
+  ALL_TIME: `all-time`,
+  DAY: `day`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};

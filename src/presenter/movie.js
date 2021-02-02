@@ -46,6 +46,10 @@ export default class Movie {
     this._filmComponent.setClickHandler(() => {
       this._api.getComments(this._film.id).then((comments) => {
         this._commentModel.setComments(UpdateType.PATCH, comments);
+        this._filmsModel.updateFilm(UpdateType.PATCH, Object.assign(
+            {},
+            this._film,
+            {comments: this._commentModel.getComments()}));
         this._openPopUp(this._filmPopUpComponent);
       });
     });
@@ -109,8 +113,7 @@ export default class Movie {
 
   _removeComment(id) {
     this._commentModel.toggleCommentLoading(UpdateType.PATCH, id);
-    this._api.deleteComment(id).then(() => this._commentModel.deleteComment(UpdateType.PATCH, id))
-    .catch(() => this._commentModel.toggleCommentLoading(UpdateType.PATCH, id));
+    this._api.deleteComment(id).then(() => this._commentModel.deleteComment(UpdateType.PATCH, id));
   }
 
   _addComment(emotion, commentText) {
@@ -143,7 +146,10 @@ export default class Movie {
     this._api.addComment(this._film.id, comment)
     .then((newComment) => {
       this._commentModel.addComment(UpdateType.PATCH, newComment);
-      this._filmsModel.updateFilm(UpdateType.PATCH, this._film.id);
+      this._filmsModel.updateFilm(UpdateType.PATCH, Object.assign(
+          {},
+          this._film,
+          {comments: this._commentModel.getComments()}));
     })
     .finally(() => this._filmsModel.toggleFilmLoading(UpdateType.PATCH, this._film.id));
   }

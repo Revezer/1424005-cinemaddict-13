@@ -8,10 +8,11 @@ import NoFilm from "../view/no-film.js";
 import Movie from "./movie.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortFilmData, sortFilmRating} from "../utils/film.js";
-import {SortType, UserAction, UpdateType, FilterType} from "../const";
+import {SortType, UserAction, UpdateType, FilterType, StatPeriod} from "../const";
 import {filter} from "../utils/navigation.js";
 import LoadingView from "../view/loading.js";
 import StatsView from "../view/stats.js";
+import UserRankViev from "../view/userrank.js";
 
 const FILM_STEP = 5;
 
@@ -27,6 +28,7 @@ export default class MovieList {
     this._filterType = FilterType.ALL;
     this._filters = filter;
     this._isLoading = true;
+    this._statPeriod = StatPeriod.ALL_TIME;
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -38,7 +40,6 @@ export default class MovieList {
 
     this._filmsModel.addObserver(this._handleModelEvent);
 
-    this._sortComponent = new Sort();
     this._filmsSectionComponent = new FilmsSection();
     this._filmSectionComponent = new FilmSection(``, `visually-hidden`, `All movies. Upcoming`);
     this._filmListComponent = new FilmList();
@@ -79,14 +80,14 @@ export default class MovieList {
 
   _renderNavigation() {
     const films = this._getFilms();
+    let filmsWatched = this._filters[FilterType.WATCHED](films);
     let watchlist = this._filters[FilterType.WATCHLIST](films).length;
     let watched = this._filters[FilterType.WATCHED](films).length;
     let favorites = this._filters[FilterType.FAVORITES](films).length;
-    this._statsComponent = new StatsView(films);
+    this._statsComponent = new StatsView(filmsWatched, this._statPeriod);
     this._navigationComponent = new Navigation(watchlist, watched, favorites, this._filterType);
     render(this._container, this._navigationComponent.getElement(), RenderPosition.AFTERBEGIN);
     this._navigationComponent.setSortTypeChangeHandler(this._handleSortNavigationChange);
-    // this._navigationComponent.setStatsNavigationHandler(this._showStats);
   }
 
   _handleSortNavigationChange(navigationType) {
@@ -95,7 +96,6 @@ export default class MovieList {
     }
     this._filterType = navigationType;
     this._clearBoard({resetRenderedTaskCount: true});
-
 
     if (navigationType === FilterType.STATS) {
       this._showStats();
@@ -128,8 +128,17 @@ export default class MovieList {
     render(this._filmsSectionComponent.getElement(), this._filmSectionComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
+  _renderUserRank() {
+    const films = this._getFilms();
+    const headerElement = document.querySelector(`.header`);
+    let watched = this._filters[FilterType.WATCHED](films).length;
+    this.userRankComponent = new UserRankViev(watched);
+    render(headerElement, this.userRankComponent.getElement(), RenderPosition.BEFOREEND);
+  }
+
   _showStats() {
     this._clearBoard();
+    this._renderUserRank();
     this._renderNavigation();
     this._renderStats();
   }
@@ -143,7 +152,9 @@ export default class MovieList {
       this._renderLoading();
       return;
     }
+    this._renderUserRank();
     this._renderNavigation();
+    this._sortComponent = new Sort(this._currentSortType);
     this._renderSort();
     this._renderFilmsSection();
     this._renderFilmSection();
@@ -251,6 +262,7 @@ export default class MovieList {
     remove(this._loadingComponent);
     remove(this._sortComponent);
     remove(this._statsComponent);
+    remove(this.userRankComponent);
 
     if (resetRenderedTaskCount) {
       this._renderFilmCount = FILM_STEP;

@@ -429,7 +429,7 @@ export default class PopUp extends Smart {
     if (this._data.comments.length === 0) {
       return;
     }
-    Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`), (comment) => {
+    Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`)).forEach((comment) => {
       comment.addEventListener(`click`, (evt) => this._deleteCommentHandler(evt));
     });
   }
