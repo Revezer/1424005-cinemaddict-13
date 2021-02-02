@@ -567,6 +567,10 @@ button {
   overflow-y: auto;
 }
 
+.film-details--loading {
+  filter: blur(5px);
+}
+
 .film-details__inner {
   background-color: #212126;
 }

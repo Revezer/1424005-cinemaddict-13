@@ -25,7 +25,10 @@ const popUp = (film) => {
     actor,
     textComment,
     emotionComment,
+    loading
   } = film;
+
+  const genresQuantity = () => genres.length === 1 ? `Genre` : `Genres`;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
@@ -46,7 +49,7 @@ const popUp = (film) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${element.commentAuthor}</span>
           <span class="film-details__comment-day">${dateComment(element.commentDate)}</span>
-          <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
+          <button class="film-details__comment-delete" data-id="${element.id}" ${element.loading ? `disabled` : ``}>${element.loading ? `Deleting...` : `Delete`}</button>
         </p>
       </div>
     </li>`;
@@ -62,8 +65,7 @@ const popUp = (film) => {
 
   const commentsTemplate = createComments();
   const genreTemplate = createGenre();
-
-  return `<section class="film-details">
+  return `<section class="film-details ${loading ? `film-details--loading` : ``}">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">
@@ -73,7 +75,7 @@ const popUp = (film) => {
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="${picture}" alt="">
 
-          <p class="film-details__age">${ageRating}</p>
+          <p class="film-details__age">${ageRating}+</p>
         </div>
 
         <div class="film-details__info">
@@ -114,7 +116,7 @@ const popUp = (film) => {
               <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genresQuantity()}</td>
               <td class="film-details__cell">
               ${genreTemplate}
               </td>
@@ -421,7 +423,7 @@ export default class PopUp extends Smart {
     if (this._data.comments.length === 0) {
       return;
     }
-    Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`), (comment) => {
+    Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`)).forEach((comment) => {
       comment.addEventListener(`click`, (evt) => this._deleteCommentHandler(evt));
     });
   }

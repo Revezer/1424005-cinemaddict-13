@@ -21,5 +21,14 @@ export const FilterType = {
   ALL: `all`,
   WATCHLIST: `watchlist`,
   WATCHED: `watched`,
-  FAVORITES: `favorites`
+  FAVORITES: `favorites`,
+  STATS: `stats`
+};
+
+export const StatPeriod = {
+  ALL_TIME: `all-time`,
+  DAY: `day`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
 };
