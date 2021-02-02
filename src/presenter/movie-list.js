@@ -80,7 +80,7 @@ export default class MovieList {
 
   _renderNavigation() {
     const films = this._getFilms();
-    let filmsWatched = this._filters[FilterType.WATCHED](films);
+    const filmsWatched = this._filters[FilterType.WATCHED](films);
     let watchlist = this._filters[FilterType.WATCHLIST](films).length;
     let watched = this._filters[FilterType.WATCHED](films).length;
     let favorites = this._filters[FilterType.FAVORITES](films).length;

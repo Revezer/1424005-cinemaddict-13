@@ -28,13 +28,7 @@ const popUp = (film) => {
     loading
   } = film;
 
-  const genresQuantity = () => {
-    if (genres.length === 1) {
-      return `Genre`;
-    } else {
-      return `Genres`;
-    }
-  };
+  const genresQuantity = () => genres.length === 1 ? `Genre` : `Genres`;
 
   const dateComment = (date) => dayjs(date).format(`YYYY/MM/DD`);
   const releaseDateFilm = (date) => dayjs(date).format(`DD MMMM YYYY`);
