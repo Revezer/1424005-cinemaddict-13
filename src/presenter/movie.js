@@ -51,11 +51,10 @@ export default class Movie {
             this._film,
             {comments: this._commentModel.getComments()}));
         this._openPopUp(this._filmPopUpComponent);
+        this._filmPopUpComponent.setButtonClose();
       });
     });
 
-    this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
-    this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
     this._filmPopUpComponent._setAddComment(this._addComment);
     this._filmPopUpComponent._setDeleteComment(this._removeComment);
 
@@ -73,7 +72,6 @@ export default class Movie {
 
     if (this._mode === Mode.POPUP) {
       replace(this._filmPopUpComponent, prevFilmPopUpComponent);
-      this._filmPopUpComponent.restoreHandlers();
     }
 
     remove(prevFilmComponent);
@@ -107,8 +105,10 @@ export default class Movie {
   _openPopUp(filmPopUp) {
     render(document.body, filmPopUp.getElement(), RenderPosition.BEFOREEND);
     document.body.classList.add(`hide-overflow`);
-    filmPopUp.setButtonClose();
+    filmPopUp.setButtonOnEsc();
     this._mode = Mode.POPUP;
+    this._filmPopUpComponent.setSwichModeClick(this._swichModeClosePopUp);
+    this._filmPopUpComponent.setSwichModeButton(this._swichModeClosePopUp);
   }
 
   _removeComment(id) {

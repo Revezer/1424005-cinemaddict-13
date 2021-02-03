@@ -358,22 +358,31 @@ export default class PopUp extends Smart {
 
   _buttonCloseHandler(evt) {
     evt.preventDefault();
-    this.getElement().remove();
+    this._onPopupClose();
     document.body.classList.remove(`hide-overflow`);
   }
 
   setButtonClose(callback) {
     this._callback.buttonCloseClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._buttonCloseHandler);
+  }
+
+  setButtonOnEsc() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _onEscKeyDown(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      this.getElement().remove();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-      document.body.classList.remove(`hide-overflow`);
+      this._onPopupClose();
     }
+  }
+
+  _onPopupClose() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this._swichModeButton);
+
+    this.getElement().remove();
+    document.body.classList.remove(`hide-overflow`);
   }
 
   _swichModeClick(evt) {
